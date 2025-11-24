@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (uncomment if data files are large and shouldn't be tracked)
+# data/*.csv
+# data/*.pkl
+# data/*.pickle
+
+# Model files
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.model
+
+# Logs
+*.log
+logs/
+
+# Results and outputs
+results/
+outputs/
+*.png
+*.jpg
+*.jpeg
+# Keep specific images in img/ directory
+!img/AUROC_comparison.png
+!img/approval_rate_theme.png
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
