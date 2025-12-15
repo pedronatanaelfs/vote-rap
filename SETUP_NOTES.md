@@ -2,14 +2,14 @@
 
 ## Path Updates
 
-The notebooks have been updated to work with the new repository structure. However, if you encounter path issues:
+The scripts have been updated to work with the new repository structure. However, if you encounter path issues:
 
-### Feature Engineering Notebooks
-- Located in: `notebooks/01-feature-engineering/`
-- Data files should be in: `../../data/` (relative to notebook location)
+### Feature Engineering Scripts
+- Located in: `scripts/01-feature-engineering/`
+- Data files should be in: `../../data/` (relative to script location)
 
 ### Modeling Notebook
-- Located in: `notebooks/02-modeling/`
+- Located in: `scripts/02-modeling/`
 - Data files should be in: `../../data/` (relative to notebook location)
 
 ## Data Files
@@ -23,14 +23,14 @@ All required data files are included in the `data/` directory:
 
 ## Running from Different Locations
 
-If you need to run notebooks from a different location, you may need to update the paths. The current structure assumes:
+If you need to run scripts from a different location, you may need to update the paths. The current structure assumes:
 - Repository root: `vote-rap/`
 - Data directory: `vote-rap/data/`
-- Notebooks: `vote-rap/notebooks/`
+- Scripts: `vote-rap/scripts/`
 
 ## Additional Data Requirements
 
-Some feature engineering notebooks may reference additional data files that aren't included in this repository (e.g., raw API responses, intermediate processing files). In such cases:
+Some feature engineering scripts may reference additional data files that aren't included in this repository (e.g., raw API responses, intermediate processing files). In such cases:
 1. Use the pre-computed feature files already in `data/`
 2. Or refer to the original research repository for complete data acquisition scripts
 

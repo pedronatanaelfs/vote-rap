@@ -72,3 +72,10 @@ outputs/
 *.temp
 .cache/
 
+/data/authors
+/data/extra
+/data/propositions
+/data/voting/orientations
+/data/voting/proposition
+/data/voting
+VOTE_RAP_Version_14_12.pdf

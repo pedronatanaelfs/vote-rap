@@ -1,0 +1,188 @@
+VOTE-RAP - Author Popularity Feature Engineering
+Execution started: 2025-11-28 15:20:39
+================================================================================
+
+[2025-11-28 15:20:39] Starting author popularity calculation...
+[2025-11-28 15:20:39] Loading vote session data...
+[2025-11-28 15:20:39] Vote session data loaded successfully: 41461 rows
+[2025-11-28 15:20:39] Available columns: id, uri, data, idOrgao, siglaOrgao, aprovacao, descricao, ultimaAberturaVotacao_descricao, ultimaApresentacaoProposicao_descricao, year, propositionID, proposicao_siglaTipo, idVotacao, AVANTE, Avante, Bl MdbPsdRepPode, Bl MdbPsdRepPodePsc, Bl UniPpFdrPsdbCid..., Bloco Parlamentar, CIDADANIA, Cidadania, DEM, Fdr PSDB-CIDADAN, Fdr PSDB-CIDADANIA, Fdr PSOL-REDE, Fdr PT-PCdoB-PV, GOV., Governo, MDB, MINORIA, Maioria, Minoria, NOVO, Novo, NovoCidPv, Oposição, PATRI, PATRIOTA, PCdoB, PDT, PEN, PFL, PFL/PRONA, PHS, PL, PL/PSL, PMB, PMDB, PMN, PMR, PODE, PP, PPB, PPL, PPS, PR, PRB, PRD, PRONA, PROS, PRP, PRTB, PSB, PSC, PSD, PSDB, PSDC, PSL, PSOL, PT, PTB, PTC, PTN, PTdoB, PV, Patriota, PdtAvante, PdtPodePros..., PdtPros..., PdtSdPode..., PmdbPen, PmdbPpDemPsbPdtPodePcdobPscPhsAvantePen, PmdbPpPtbDem..., PmdbPpPtbDemSdPscPhsPen, PmdbPpPtbPscPhsPen, PmdbPscPtc, PmdbPsdbPp..., PmdbPtPpPrPtbPsc.., PmdbPtbPscPTdoB..., PmdbPtbPscPtc, PmdbPtc, Podemos, PpAvante, PpMdbPtb, PpPTdoB, PpPodeAvante, PpPodeAvantePen, PpPodePTdoB, PpPodePscAvantePen, PpPrPsd, PpPros, PpPscPmn, PpPsdPtn..., PpPtbPsc, PpPtbPscPhs, PpPtnPTdoB, PpPtnPhs..., PpsPv, PrPrbPtdobPrtbPrpPhsPtcPsl, PrPrbSd, PrPros, PrPsdPros, PrPtdobPrp, PrPtdobPrpPhs, PrPtdobPrpPhsPslPrtb, PrPtdobPrpPhsPtcPsl, PrPtdobPrpPhsPtcPslPrtb, PrPtdobPrtbPrpPhsPtcPsl, PrbPtnPmnPrpPsdcPrtb, PrbPtnPmnPrpPsdcPrtbPtcPslPtdoB, PrbPtnPmnPrpPsdcPtcPslPtdoB, PrbPtnPmnPtcPtdoB, PrbPtnPmnPtcPtdoBPsl, PrbPtnPtcPtdoBPsl, PrbPtnPtdobPsl, PsbPCdoBPmnPrb, PsbPcdob, PsbPcdobPrb, PsbPdtPCdoBPmnPhsPrb, PsbPdtPCdoBPmnPrb, PsbPdtPcdobPmnPan, PsbPdtPcdobPmnPanPhs, PsbPdtPcdobPmnPanPhsPrb, PsbPdtPcdobPmnPhsPrb, PsbPtbPcdob, PscPtb, PsdbPps, PsdbPrPrbPtbSdPpsProsPslPrp, PsdbPsbPps, PsdbPsbPpsPv, PsdbPsdPrPrb..., PslPpPsd..., PtPdtPcdob, PtPsdPrPdtProsPcdob, PtbPros, PtbProsPsl, PtbProsPslPrp, PtbPsdc, PtbPvPps, PtbSdPros..., PtnPtdoBPsl, PvPps, REDE, REPUBLICANOS, Rede, Republican, SD, SDD, SOLIDARIEDADE, Solidaried, UNIÃO, União, idProposicao_x, author_type, author, author_type_code, idDeputadoAutor, num_authors, idProposicao_y, theme, legislatura
+[2025-11-28 15:20:39] Calculating session importance metrics...
+[2025-11-28 15:20:39] Vote count per session calculated: 9260 unique sessions
+[2025-11-28 15:20:39] Merge completed. Shape after merge: (41461, 172)
+[2025-11-28 15:20:39] Removing duplicate sessions...
+[2025-11-28 15:20:40] Number of unique sessions: 9260
+[2025-11-28 15:20:40] Preparing to load vote data...
+[2025-11-28 15:20:40] Loading vote data year by year...
+[2025-11-28 15:20:40] Loading data for year 2003...
+[2025-11-28 15:20:40] Loaded 12380 votes for 2003. Total so far: 12380
+[2025-11-28 15:20:40] Loading data for year 2004...
+[2025-11-28 15:20:40] Loaded 24903 votes for 2004. Total so far: 37283
+[2025-11-28 15:20:40] Loading data for year 2005...
+[2025-11-28 15:20:40] Loaded 17455 votes for 2005. Total so far: 54738
+[2025-11-28 15:20:40] Loading data for year 2006...
+[2025-11-28 15:20:40] Loaded 21045 votes for 2006. Total so far: 75783
+[2025-11-28 15:20:40] Loading data for year 2007...
+[2025-11-28 15:20:40] Loaded 41490 votes for 2007. Total so far: 117273
+[2025-11-28 15:20:40] Loading data for year 2008...
+[2025-11-28 15:20:40] Loaded 32110 votes for 2008. Total so far: 149383
+[2025-11-28 15:20:40] Loading data for year 2009...
+[2025-11-28 15:20:40] Loaded 45908 votes for 2009. Total so far: 195291
+[2025-11-28 15:20:40] Loading data for year 2010...
+[2025-11-28 15:20:40] Loaded 22295 votes for 2010. Total so far: 217586
+[2025-11-28 15:20:40] Loading data for year 2011...
+[2025-11-28 15:20:41] Loaded 33235 votes for 2011. Total so far: 250821
+[2025-11-28 15:20:41] Loading data for year 2012...
+[2025-11-28 15:20:41] Loaded 22729 votes for 2012. Total so far: 273550
+[2025-11-28 15:20:41] Loading data for year 2013...
+[2025-11-28 15:20:41] Loaded 43597 votes for 2013. Total so far: 317147
+[2025-11-28 15:20:41] Loading data for year 2014...
+[2025-11-28 15:20:41] Loaded 25213 votes for 2014. Total so far: 342360
+[2025-11-28 15:20:41] Loading data for year 2015...
+[2025-11-28 15:20:41] Loaded 113832 votes for 2015. Total so far: 456192
+[2025-11-28 15:20:41] Loading data for year 2016...
+[2025-11-28 15:20:41] Loaded 72419 votes for 2016. Total so far: 528611
+[2025-11-28 15:20:41] Loading data for year 2017...
+[2025-11-28 15:20:42] Loaded 76522 votes for 2017. Total so far: 605133
+[2025-11-28 15:20:42] Loading data for year 2018...
+[2025-11-28 15:20:42] Loaded 45941 votes for 2018. Total so far: 651074
+[2025-11-28 15:20:42] Loading data for year 2019...
+[2025-11-28 15:20:42] Loaded 120952 votes for 2019. Total so far: 772026
+[2025-11-28 15:20:42] Loading data for year 2020...
+[2025-11-28 15:20:43] Loaded 159717 votes for 2020. Total so far: 931743
+[2025-11-28 15:20:43] Loading data for year 2021...
+[2025-11-28 15:20:43] Loaded 322237 votes for 2021. Total so far: 1253980
+[2025-11-28 15:20:43] Loading data for year 2022...
+[2025-11-28 15:20:44] Loaded 197189 votes for 2022. Total so far: 1451169
+[2025-11-28 15:20:44] Loading data for year 2023...
+[2025-11-28 15:20:44] Loaded 128679 votes for 2023. Total so far: 1579848
+[2025-11-28 15:20:44] Loading data for year 2024...
+[2025-11-28 15:20:45] Loaded 116400 votes for 2024. Total so far: 1696248
+[2025-11-28 15:20:45] Concatenating 22 vote dataframes...
+[2025-11-28 15:20:45] Total votes loaded: 1696248
+[2025-11-28 15:20:45] Filtering votes and merging with session data...
+[2025-11-28 15:20:45] Before filtering: 1696248 rows
+[2025-11-28 15:20:45] Total session IDs for filtering: 9260
+[2025-11-28 15:20:45] Sample session IDs: ['447937-141', '2208323-20', '613662-40', '2348266-72', '2416826-49']
+[2025-11-28 15:20:45] 'idVotacao' dtype in df_votes: object
+[2025-11-28 15:20:45] 'id' dtype in df_sessions_unique: object
+[2025-11-28 15:20:45] After filtering: 772220 rows
+[2025-11-28 15:20:45] Merging with 'author' column and relevance metrics...
+[2025-11-28 15:20:45] After merge: 772220 rows
+[2025-11-28 15:20:45] Converting 'dataHoraVoto' to datetime...
+[2025-11-28 15:20:46] Sorting votes by 'dataHoraVoto' for chronological processing...
+[2025-11-28 15:20:46] Setting parameters for popularity calculation...
+[2025-11-28 15:20:46] Initializing data structures for efficient calculation...
+[2025-11-28 15:20:46] Processing 772220 votes to calculate author popularity...
+[2025-11-28 15:20:46] First pass: collecting vote data...
+[2025-11-28 15:20:46] Max votes value for normalization: 256
+[2025-11-28 15:20:46] Processing chunk 0-100000 of 772220...
+[2025-11-28 15:20:56] Processed 100000 / 772220 votes. Unique authors: 84
+[2025-11-28 15:20:56] Processing chunk 100000-200000 of 772220...
+[2025-11-28 15:21:07] Processed 200000 / 772220 votes. Unique authors: 143
+[2025-11-28 15:21:07] Processing chunk 200000-300000 of 772220...
+[2025-11-28 15:21:17] Processed 300000 / 772220 votes. Unique authors: 188
+[2025-11-28 15:21:17] Processing chunk 300000-400000 of 772220...
+[2025-11-28 15:21:27] Processed 400000 / 772220 votes. Unique authors: 235
+[2025-11-28 15:21:27] Processing chunk 400000-500000 of 772220...
+[2025-11-28 15:21:37] Processed 500000 / 772220 votes. Unique authors: 267
+[2025-11-28 15:21:37] Processing chunk 500000-600000 of 772220...
+[2025-11-28 15:21:47] Processed 600000 / 772220 votes. Unique authors: 304
+[2025-11-28 15:21:47] Processing chunk 600000-700000 of 772220...
+[2025-11-28 15:21:57] Processed 700000 / 772220 votes. Unique authors: 363
+[2025-11-28 15:21:57] Processing chunk 700000-772220 of 772220...
+[2025-11-28 15:22:04] Processed 772220 / 772220 votes. Unique authors: 385
+[2025-11-28 15:22:04] First pass complete.
+[2025-11-28 15:22:04] Second pass: calculating improved popularity metrics...
+[2025-11-28 15:22:04] Total authors: 385. Total votes to process in 2nd pass: 772220
+[2025-11-28 15:22:04] Second pass: 10000/772220 votes (1.3%), ETA ~ 0.3 min
+[2025-11-28 15:22:04] Second pass: 20000/772220 votes (2.6%), ETA ~ 0.3 min
+[2025-11-28 15:22:05] Second pass: 30000/772220 votes (3.9%), ETA ~ 0.3 min
+[2025-11-28 15:22:05] Second pass: 40000/772220 votes (5.2%), ETA ~ 0.3 min
+[2025-11-28 15:22:05] Second pass: 50000/772220 votes (6.5%), ETA ~ 0.3 min
+[2025-11-28 15:22:05] Second pass: 60000/772220 votes (7.8%), ETA ~ 0.3 min
+[2025-11-28 15:22:05] Second pass: 70000/772220 votes (9.1%), ETA ~ 0.3 min
+[2025-11-28 15:22:06] Second pass: 80000/772220 votes (10.4%), ETA ~ 0.3 min
+[2025-11-28 15:22:06] Second pass: 90000/772220 votes (11.7%), ETA ~ 0.3 min
+[2025-11-28 15:22:06] Second pass: 100000/772220 votes (12.9%), ETA ~ 0.2 min
+[2025-11-28 15:22:06] Second pass: 110000/772220 votes (14.2%), ETA ~ 0.2 min
+[2025-11-28 15:22:06] Second pass: 120000/772220 votes (15.5%), ETA ~ 0.2 min
+[2025-11-28 15:22:07] Second pass: 130000/772220 votes (16.8%), ETA ~ 0.2 min
+[2025-11-28 15:22:07] Second pass: 140000/772220 votes (18.1%), ETA ~ 0.2 min
+[2025-11-28 15:22:07] Second pass: 150000/772220 votes (19.4%), ETA ~ 0.2 min
+[2025-11-28 15:22:07] Second pass: 160000/772220 votes (20.7%), ETA ~ 0.2 min
+[2025-11-28 15:22:08] Second pass: 170000/772220 votes (22.0%), ETA ~ 0.2 min
+[2025-11-28 15:22:08] Second pass: 180000/772220 votes (23.3%), ETA ~ 0.2 min
+[2025-11-28 15:22:08] Second pass: 190000/772220 votes (24.6%), ETA ~ 0.2 min
+[2025-11-28 15:22:08] Second pass: 200000/772220 votes (25.9%), ETA ~ 0.2 min
+[2025-11-28 15:22:08] Second pass: 210000/772220 votes (27.2%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 220000/772220 votes (28.5%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 230000/772220 votes (29.8%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 240000/772220 votes (31.1%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 250000/772220 votes (32.4%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 260000/772220 votes (33.7%), ETA ~ 0.2 min
+[2025-11-28 15:22:09] Second pass: 270000/772220 votes (35.0%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 280000/772220 votes (36.3%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 290000/772220 votes (37.6%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 300000/772220 votes (38.8%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 310000/772220 votes (40.1%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 320000/772220 votes (41.4%), ETA ~ 0.2 min
+[2025-11-28 15:22:10] Second pass: 330000/772220 votes (42.7%), ETA ~ 0.1 min
+[2025-11-28 15:22:11] Second pass: 340000/772220 votes (44.0%), ETA ~ 0.1 min
+[2025-11-28 15:22:11] Processing author 100/385 (26.0%). Elapsed time: 91.8s
+[2025-11-28 15:22:11] Second pass: 350000/772220 votes (45.3%), ETA ~ 0.1 min
+[2025-11-28 15:22:11] Second pass: 360000/772220 votes (46.6%), ETA ~ 0.1 min
+[2025-11-28 15:22:11] Second pass: 370000/772220 votes (47.9%), ETA ~ 0.1 min
+[2025-11-28 15:22:11] Second pass: 380000/772220 votes (49.2%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 390000/772220 votes (50.5%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 400000/772220 votes (51.8%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 410000/772220 votes (53.1%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 420000/772220 votes (54.4%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 430000/772220 votes (55.7%), ETA ~ 0.1 min
+[2025-11-28 15:22:12] Second pass: 440000/772220 votes (57.0%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Second pass: 450000/772220 votes (58.3%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Second pass: 460000/772220 votes (59.6%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Second pass: 470000/772220 votes (60.9%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Second pass: 480000/772220 votes (62.2%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Processing author 200/385 (51.9%). Elapsed time: 94.3s
+[2025-11-28 15:22:13] Second pass: 490000/772220 votes (63.5%), ETA ~ 0.1 min
+[2025-11-28 15:22:13] Second pass: 500000/772220 votes (64.7%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 510000/772220 votes (66.0%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 520000/772220 votes (67.3%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 530000/772220 votes (68.6%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 540000/772220 votes (69.9%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 550000/772220 votes (71.2%), ETA ~ 0.1 min
+[2025-11-28 15:22:14] Second pass: 560000/772220 votes (72.5%), ETA ~ 0.1 min
+[2025-11-28 15:22:15] Second pass: 570000/772220 votes (73.8%), ETA ~ 0.1 min
+[2025-11-28 15:22:15] Second pass: 580000/772220 votes (75.1%), ETA ~ 0.1 min
+[2025-11-28 15:22:15] Second pass: 590000/772220 votes (76.4%), ETA ~ 0.1 min
+[2025-11-28 15:22:15] Second pass: 600000/772220 votes (77.7%), ETA ~ 0.1 min
+[2025-11-28 15:22:15] Second pass: 610000/772220 votes (79.0%), ETA ~ 0.1 min
+[2025-11-28 15:22:16] Second pass: 620000/772220 votes (80.3%), ETA ~ 0.0 min
+[2025-11-28 15:22:16] Second pass: 630000/772220 votes (81.6%), ETA ~ 0.0 min
+[2025-11-28 15:22:16] Second pass: 640000/772220 votes (82.9%), ETA ~ 0.0 min
+[2025-11-28 15:22:16] Second pass: 650000/772220 votes (84.2%), ETA ~ 0.0 min
+[2025-11-28 15:22:16] Second pass: 660000/772220 votes (85.5%), ETA ~ 0.0 min
+[2025-11-28 15:22:16] Second pass: 670000/772220 votes (86.8%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Processing author 300/385 (77.9%). Elapsed time: 97.7s
+[2025-11-28 15:22:17] Second pass: 680000/772220 votes (88.1%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Second pass: 690000/772220 votes (89.4%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Second pass: 700000/772220 votes (90.6%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Second pass: 710000/772220 votes (91.9%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Second pass: 720000/772220 votes (93.2%), ETA ~ 0.0 min
+[2025-11-28 15:22:17] Second pass: 730000/772220 votes (94.5%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Second pass: 740000/772220 votes (95.8%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Second pass: 750000/772220 votes (97.1%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Second pass: 760000/772220 votes (98.4%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Second pass: 770000/772220 votes (99.7%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Second pass: 772220/772220 votes (100.0%), ETA ~ 0.0 min
+[2025-11-28 15:22:18] Creating DataFrame with improved popularity metrics...
+[2025-11-28 15:22:19] DataFrame created with 772220 records
+[2025-11-28 15:22:19] Removing duplicate voting session IDs...
+[2025-11-28 15:22:19] Final popularity DataFrame: (1990, 8)
+[2025-11-28 15:22:19] Saving popularity metrics to C:\Users\Pedro Natanael\OneDrive\Documents\Mestrado\Projeto de Pesquisa\vote-rap\scripts\01-feature-engineering\Author's Popularity\author_popularity.csv...
+[2025-11-28 15:22:19] Popularity metrics saved successfully
+[2025-11-28 15:22:19] Processing complete in 100.15 seconds (1.67 minutes)
+[2025-11-28 15:22:19] Output log saved to: authors_popularity_output.txt
+
+
+Execution completed: 2025-11-28 15:22:19

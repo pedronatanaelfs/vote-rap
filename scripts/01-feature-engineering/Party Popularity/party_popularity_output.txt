@@ -1,0 +1,172 @@
+VOTE-RAP - Party Popularity Feature Engineering
+Execution started: 2025-11-28 15:06:41
+================================================================================
+
+=== PARTY POPULARITY FEATURE ENGINEERING ===
+Loading data...
+Loaded 41,461 rows
+After removing duplicates: 9,260 rows
+Loading deputy-party mapping data...
+Loaded deputy-party data for 88,852 records
+Processing party information...
+Fetching missing party information from API...
+WARNING: API data may change over time, affecting reproducibility
+  Progress: 0/400
+  Progress: 50/400
+  Progress: 100/400
+  Progress: 150/400
+  Progress: 200/400
+  Progress: 250/400
+  Progress: 300/400
+  Progress: 350/400
+Party information processing complete!
+Preparing base voting data...
+Base voting data: 8,914 rows
+
+=== EVALUATING WINDOW CONFIGURATIONS ===
+
+Testing window 1/7: Full Window
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 2/7: 5-Year Window
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 3/7: 1-Year Window
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 4/7: Last 10 Sessions
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 5/7: Last 5 Sessions
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 6/7: Last 3 Sessions
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+Testing window 7/7: Last 1 Session
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+
+============================================================
+WINDOW EVALUATION RESULTS
+============================================================
+
+All Window Results:
+------------------------------------------------------------
+Window Configuration      RF AUROC        LR AUROC       
+------------------------------------------------------------
+Last 5 Sessions           0.6923          0.6919          ⭐ BEST
+Last 10 Sessions          0.6908          0.6928         
+Last 3 Sessions           0.6883          0.6883         
+Last 1 Session            0.6378          0.6378         
+1-Year Window             0.5473          0.6789         
+5-Year Window             0.5302          0.6272         
+Full Window               0.5110          0.6352         
+------------------------------------------------------------
+
+Best window: Last 5 Sessions (AUROC: 0.6923)
+  Random Forest AUROC: 0.6923
+  Logistic Regression AUROC: 0.6919
+
+=== GENERATING AUROC COMPARISON IMAGE ===
+Saved: party_popularity_auroc_comparison.png
+
+=== GENERATING FINAL DATASET ===
+Using best window: Last 5 Sessions
+    Processing row 0/8,914 (0.0%)
+    Processing row 1,000/8,914 (11.2%)
+    Processing row 2,000/8,914 (22.4%)
+    Processing row 3,000/8,914 (33.7%)
+    Processing row 4,000/8,914 (44.9%)
+    Processing row 5,000/8,914 (56.1%)
+    Processing row 6,000/8,914 (67.3%)
+    Processing row 7,000/8,914 (78.5%)
+    Processing row 8,000/8,914 (89.7%)
+Saved: party_popularity_best_window_last_5_sessions.csv
+Rows: 8,914
+
+============================================================
+FINAL DATASET STATISTICS
+============================================================
+Total Rows: 8,914
+Date Range: 2003-02-19 to 2024-12-19
+Unique Parties/Authors: 54
+
+Party Popularity Statistics:
+  Mean: 79.0%
+  Std Dev: 26.4%
+  Median: 80.0%
+  Min: 0.0%
+  Max: 100.0%
+  25th Percentile: 60.0%
+  75th Percentile: 100.0%
+
+Sample Data (first 3 rows):
+      id       data     party_or_author_type  party_popularity  aprovacao
+96076-46 2003-02-19 Órgão do Poder Executivo               0.0        1.0
+96076-49 2003-02-19 Órgão do Poder Executivo             100.0        1.0
+101651-2 2003-02-26 Órgão do Poder Executivo             100.0        1.0
+
+=== COMPLETE ===
+Generated files:
+  1. party_popularity_auroc_comparison.png
+  2. party_popularity_best_window_last_5_sessions.csv
+  3. party_popularity_output.txt
+
+
+Execution completed: 2025-11-28 15:11:33

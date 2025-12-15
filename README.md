@@ -26,11 +26,12 @@ vote-rap/
 │   ├── party_popularity_best_window_last_5_sessions.csv  # Party popularity features
 │   ├── proposition_history_predictions_historical_probability_rule.csv  # Historical approval rate
 │   └── voting_sessions_orientations_clean.csv  # Vote orientation data
-├── notebooks/
-│   ├── 01-feature-engineering/        # Feature engineering notebooks
-│   │   ├── 01-vote-orientation.ipynb  # Vote orientation feature
-│   │   ├── 02-party-popularity.ipynb  # Party popularity feature
-│   │   └── 03-historical-approval-rate.ipynb  # Historical approval rate (HAR) feature
+├── scripts/
+│   ├── 00 - Data Aquisition/         # Data acquisition scripts
+│   ├── 01-feature-engineering/       # Feature engineering scripts
+│   │   ├── Author's Popularity/      # Author popularity feature
+│   │   ├── Party Popularity/         # Party popularity feature
+│   │   └── Historical Approval Rate/ # Historical approval rate (HAR) feature
 │   └── 02-modeling/                   # Modeling notebooks
 │       └── vote-rap-model.ipynb       # Final VOTE-RAP model
 └── img/                               # Result images and visualizations
@@ -92,14 +93,17 @@ A feature representing the recent empirical probability that **similar propositi
    jupyter lab
    ```
 
-2. Navigate to the notebooks directory and open the notebooks in order:
+2. Navigate to the scripts directory and run the scripts in order:
+   - **Data Acquisition**:
+     - `scripts/00 - Data Aquisition/data_aquisition.py`
+   
    - **Feature Engineering** (run in order):
-     - `notebooks/01-feature-engineering/01-vote-orientation.ipynb`
-     - `notebooks/01-feature-engineering/02-party-popularity.ipynb`
-     - `notebooks/01-feature-engineering/03-historical-approval-rate.ipynb`
+     - `scripts/01-feature-engineering/Author's Popularity/authors_popularity.py`
+     - `scripts/01-feature-engineering/Party Popularity/party_popularity.py`
+     - `scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate.py`
    
    - **Modeling**:
-     - `notebooks/02-modeling/vote-rap-model.ipynb`
+     - `scripts/02-modeling/vote-rap-model.ipynb`
 
 3. Make sure to select the `Python (vote-rap)` kernel when opening notebooks.
 
@@ -107,8 +111,8 @@ A feature representing the recent empirical probability that **similar propositi
 
 The typical workflow is:
 
-1. **Feature Engineering** (Optional): Run the feature engineering notebooks to generate the three main features (vote orientation, party popularity, historical approval rate).
-   - **Note**: The feature engineering notebooks may require path updates. They currently reference `../data/` but should reference `../../data/` since they're in subdirectories. Alternatively, you can use the pre-computed feature files already in the `data/` directory.
+1. **Feature Engineering** (Optional): Run the feature engineering scripts to generate the three main features (author popularity, party popularity, historical approval rate).
+   - **Note**: The feature engineering scripts use relative paths to the `data/` directory. Alternatively, you can use the pre-computed feature files already in the `data/` directory.
 2. **Modeling**: Run the main modeling notebook which:
    - Loads all features
    - Performs data preprocessing

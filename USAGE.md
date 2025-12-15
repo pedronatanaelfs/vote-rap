@@ -43,21 +43,21 @@ If you want to regenerate all features from scratch:
    jupyter lab
    ```
 
-2. **Run feature engineering notebooks in order**:
-   - Open `notebooks/01-feature-engineering/01-vote-orientation.ipynb`
-     - This generates vote orientation features
-     - **Note**: May require additional data files from the original data acquisition process
+2. **Run feature engineering scripts in order**:
+   - Run `scripts/01-feature-engineering/Author's Popularity/authors_popularity.py`
+     - This generates author popularity features
+     - Output: `data/author_popularity.csv`
    
-   - Open `notebooks/01-feature-engineering/02-party-popularity.ipynb`
+   - Run `scripts/01-feature-engineering/Party Popularity/party_popularity.py`
      - This generates party popularity features
      - Output: `party_popularity_best_window_last_5_sessions.csv`
    
-   - Open `notebooks/01-feature-engineering/03-historical-approval-rate.ipynb`
+   - Run `scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate.py`
      - This generates historical approval rate (HAR) features
      - Output: `proposition_history_predictions_historical_probability_rule.csv`
 
 3. **Run the modeling notebook**:
-   - Open `notebooks/02-modeling/vote-rap-model.ipynb`
+   - Open `scripts/02-modeling/vote-rap-model.ipynb`
    - This loads all features and trains the final VOTE-RAP model
    - Make sure all feature CSV files are in the `data/` directory
 
@@ -71,18 +71,18 @@ If you just want to run the final model with the provided feature files:
    ```
 
 2. **Run the modeling notebook**:
-   - Open `notebooks/02-modeling/vote-rap-model.ipynb`
+   - Open `scripts/02-modeling/vote-rap-model.ipynb`
    - Select the `Python (vote-rap)` kernel
    - Run all cells
    - The notebook will load pre-computed features from the `data/` directory
 
 ## Expected Outputs
 
-### Feature Engineering Notebooks
+### Feature Engineering Scripts
 
-- **01-vote-orientation.ipynb**: Generates vote orientation features (may require additional data)
-- **02-party-popularity.ipynb**: Generates `party_popularity_best_window_last_5_sessions.csv`
-- **03-historical-approval-rate.ipynb**: Generates `proposition_history_predictions_historical_probability_rule.csv`
+- **authors_popularity.py**: Generates `data/author_popularity.csv`
+- **party_popularity.py**: Generates `party_popularity_best_window_last_5_sessions.csv`
+- **historical_approval_rate.py**: Generates `proposition_history_predictions_historical_probability_rule.csv`
 
 ### Modeling Notebook
 
@@ -97,8 +97,8 @@ The `vote-rap-model.ipynb` notebook will:
 
 ### Issue: FileNotFoundError when loading data
 
-**Solution**: Make sure you're running notebooks from the correct directory. The paths are relative to the notebook location:
-- Feature engineering notebooks: `../../data/`
+**Solution**: Make sure you're running scripts from the correct directory. The paths are relative to the script location:
+- Feature engineering scripts: `../../data/`
 - Modeling notebook: `../../data/`
 
 ### Issue: Missing dependencies
@@ -117,9 +117,9 @@ python -m ipykernel install --user --name=vote-rap --display-name="Python (vote-
 
 Then restart JupyterLab and select the kernel.
 
-### Issue: Feature engineering notebooks require additional data
+### Issue: Feature engineering scripts require additional data
 
-**Note**: Some feature engineering notebooks may reference additional data files that aren't included in this repository (e.g., raw API data, intermediate processing files). In this case:
+**Note**: Some feature engineering scripts may reference additional data files that aren't included in this repository (e.g., raw API data, intermediate processing files). In this case:
 - Use the pre-computed feature files already in the `data/` directory
 - Or refer to the original research repository for complete data acquisition scripts
 
@@ -134,7 +134,7 @@ The repository includes the following pre-computed data files in `data/`:
 
 ## Notes
 
-- The notebooks are designed to be run sequentially for feature engineering
+- The scripts are designed to be run sequentially for feature engineering
 - The modeling notebook can be run independently if feature files are already present
 - Some cells may take several minutes to execute (especially hyperparameter optimization)
 - Make sure you have sufficient RAM (recommended: 8GB+) for running the full pipeline

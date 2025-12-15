@@ -1,0 +1,176 @@
+VOTE-RAP - Global Votes Prediction FULL Enhanced Model
+Execution started: 2025-11-28 15:37:49
+================================================================================
+
+================================================================================
+GLOBAL VOTES PREDICTION - FULL ENHANCED MODEL (VOTE-RAP)
+================================================================================
+
+Loading data...
+Loaded vote_sessions: 41,461 rows
+Loaded authors_pop: 1,990 rows
+Loaded party_popularity: 8,914 rows
+Loaded historical_data: 9,260 rows
+After merging: 9,260 rows
+
+Feature engineering...
+After preprocessing: 8,914 rows
+
+Generating exploratory visualizations...
+1. Approval/Rejection by year...
+   Saved: approval_rejection_by_year.png
+2. Vote orientation accuracy by year...
+   Saved: vote_orientation_accuracy_by_year.png
+
+================================================================================
+MODEL TRAINING AND OPTIMIZATION
+================================================================================
+Splitting X and y while preserving temporal order...
+Performing temporal split (80% train, 20% test)...
+Train size: 7,131, Test size: 1,783
+Normalizing numeric features...
+
+Starting hyperparameter optimization...
+Phase 1: RandomizedSearchCV for fast exploration...
+Dataset size: 7131 samples
+Phase 1: Testing 75 random combinations x 3 folds
+Fitting 3 folds for each of 75 candidates, totalling 225 fits
+
+Phase 1 completed in 0.1 minutes
+Phase 1 best AUROC: nan
+Phase 1 best parameters: {'colsample_bytree': 0.5749080237694725, 'gamma': 1.6310000289738826, 'learning_rate': 0.07855951534491241, 'max_depth': 4, 'min_child_weight': 7, 'n_estimators': 252, 'reg_alpha': 0.06687491292803867, 'reg_lambda': 0.939964882145204, 'scale_pos_weight': 0.9755493351795202, 'subsample': 0.7667417222278043}
+
+Re-training final best model on full training data...
+Model training completed!
+
+================================================================================
+MODEL EVALUATION
+================================================================================
+Best F1_rejected = 0.706 at threshold=0.49
+
+Generating confusion matrix...
+   Saved: confusion_matrix.png
+
+Confusion matrix:
+[[ 149   95]
+ [  29 1510]]
+
+Classification report:
+              precision    recall  f1-score   support
+
+    Rejected      0.837     0.611     0.706       244
+    Approved      0.941     0.981     0.961      1539
+
+    accuracy                          0.930      1783
+   macro avg      0.889     0.796     0.833      1783
+weighted avg      0.927     0.930     0.926      1783
+
+
+Comprehensive AUROC evaluation...
+AUROC: 0.9070
+Precision: 0.9396
+Recall: 0.9812
+F1-Score: 0.9599
+Average Precision: 0.9752
+
+Generating ROC curve...
+   Saved: roc_curve.png
+Generating Precision-Recall curve...
+   Saved: precision_recall_curve.png
+
+================================================================================
+FEATURE IMPORTANCE ANALYSIS
+================================================================================
+
+Feature importances:
+------------------------------------------------------------
+0  Government Orientation              0.481707
+1  Has More Than 10 Authors            0.206831
+2  Party Popularity                    0.097529
+3  Number of Authors (Truncated)       0.094197
+4  Historical Approval Rate            0.071735
+5  Author Popularity                   0.048001
+------------------------------------------------------------
+
+Generating feature importance plot...
+   Saved: feature_importance_all.png
+Generating new features impact plot...
+   Saved: feature_importance_new_features.png
+
+New Features Performance:
+  Party Popularity: Rank 5/6 (Importance: 0.0975)
+  Historical Approval Rate: Rank 6/6 (Importance: 0.0717)
+
+New features contribution to model: 16.9% of total importance
+
+Generating party popularity distribution...
+   Saved: distribution_party_popularity.png
+Generating historical approval rate distribution...
+   Saved: distribution_historical_approval_rate.png
+Generating correlation matrix...
+   Saved: correlation_matrix_new_features.png
+
+================================================================================
+STATISTICAL COMPARISON: VOTE-RAP vs BASELINE
+================================================================================
+VOTE-RAP Model AUROC: 0.9070
+Baseline Model AUROC: 0.8599
+Difference:            +0.0471
+Improvement:           +5.48%
+
+Paired t-test:
+  Mean difference: 0.0470
+  t-statistic: 435.5850
+  p-value: 0.000000
+  Result: SIGNIFICANT difference (p < 0.05)
+
+Generating AUROC comparison plot...
+   Saved: auroc_comparison.png
+
+================================================================================
+F1-SCORE COMPARISON: VOTE-RAP vs VOTE ORIENTATION BASELINE
+================================================================================
+VOTE-RAP F1-Score (Rejected): 0.706
+Vote Orientation F1-Score (Rejected): 0.637
+
+Improvement: +0.069 (+10.8%)
+
+VOTE-RAP Confusion Matrix:
+[[ 149   95]
+ [  29 1510]]
+
+Vote Orientation Confusion Matrix:
+[[ 122  122]
+ [  17 1522]]
+
+Generating F1-Score comparison plot...
+   Saved: f1_comparison.png
+
+================================================================================
+VOTE-RAP MODEL TRAINING COMPLETED
+================================================================================
+
+Final Results:
+  AUROC: 0.9070
+  F1-Score (Rejected): 0.706
+  Improvement over Baseline (AUROC): +5.48%
+  Improvement over Vote Orientation (F1): +10.8%
+
+Generated files:
+  1. approval_rejection_by_year.png
+  2. vote_orientation_accuracy_by_year.png
+  3. confusion_matrix.png
+  4. roc_curve.png
+  5. precision_recall_curve.png
+  6. feature_importance_all.png
+  7. feature_importance_new_features.png
+  8. distribution_party_popularity.png
+  9. distribution_historical_approval_rate.png
+  10. correlation_matrix_new_features.png
+  11. auroc_comparison.png
+  12. f1_comparison.png
+
+Output log saved to: global_votes_prediction_FULL_enhanced_output.txt
+
+
+Execution completed: 2025-11-28 15:38:00

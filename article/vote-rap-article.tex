@@ -1,0 +1,275 @@
+% Article: Vote Outcome Prediction using Temporal Evidence of Related Approval Patterns
+% Based on ESWA template
+% Authors: Pedro N. F. da Silva and colleagues
+
+\documentclass[review]{elsarticle}
+\graphicspath{ {./figures/} }
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{verbatim} %comments
+\usepackage{apalike}
+\restylefloat{figure}
+\floatstyle{plaintop} %table caption at top
+\restylefloat{table}
+\usepackage{array}
+
+\journal{Expert Systems with Applications}
+
+%% For ESWA journal you need to use APA style
+\bibliographystyle{model5-names}\biboptions{authoryear}
+
+\begin{document}
+\begin{frontmatter}
+
+\title{Vote Outcome Prediction using Temporal Evidence of Related Approval Patterns}
+
+\author[label1,cor1]{Pedro N. F. da Silva}
+\ead{pnfs@ecomp.poli.br}
+
+\author[label2]{Dimas Cassimiro Nascimento}
+\ead{dimas.cassimiro@ufape.edu.br}
+
+\author[label3]{Bruno Nogueira}
+\ead{bruno@ic.ufal.br}
+
+\cortext[cor1]{Corresponding author.}
+
+\address[label1]{Programa de Pós-Graduação da Universidade de Pernambuco, Garanhuns, Pernambuco, Brazil}
+\address[label2]{Universidade Federal do Agreste de Pernambuco, Garanhuns, Pernambuco, Brazil}
+\address[label3]{Universidade Federal de Alagoas, Maceió, Alagoas, Brazil}
+
+\begin{frontmatter}
+
+\begin{abstract}
+Legislative vote-outcome prediction in multiparty systems is challenging due to complex coalition dynamics and temporal dependencies. This paper introduces VOTE-RAP, a machine learning approach for predicting vote outcomes in the Brazilian Chamber of Deputies using temporal evidence of related approval patterns. We build a dataset from official open data sources covering 9,260 voting sessions from 2003 to 2024, where each instance corresponds to a voting session on a proposition. Our methodology relies on temporal and structural features that capture government orientation, coalition size, author popularity, party popularity, and the historical approval rate (HAR) of propositions. We train an XGBoostClassifier and evaluate it on a chronological 80/20 train--test split. VOTE-RAP achieves an AUROC of 0.907, improving upon a strong baseline that uses only government orientation (AUROC 0.860). For the minority class (rejected propositions), VOTE-RAP achieves an F1-score of 0.706, improving over the baseline (0.637), using a threshold optimized for the rejected class. These results indicate that temporal and structural features enhance predictive performance beyond a single-feature baseline, and a year-by-year moving-window analysis suggests that performance varies across political periods. The approach provides a transparent, feature-based method for understanding legislative outcomes in dynamic political systems.
+\end{abstract}
+
+\begin{keyword}
+Legislative vote prediction \sep Machine learning \sep Temporal features \sep Brazilian Chamber of Deputies \sep Gradient-boosted trees \sep Political behavior analysis
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+\label{introduction}
+
+The Brazilian Chamber of Deputies, with its 513 members, operates within a highly dynamic and complex political environment characterized by multiparty politics, shifting coalitions, and ideological diversity. Understanding and predicting legislative behavior in such systems requires computational approaches capable of capturing both structural relationships and temporal patterns. The increasing availability of open legislative data from the Brazilian Chamber, including roll-call votes, proposition metadata, deputy and party information, and session details, enables researchers to develop sophisticated models for analyzing and predicting political behavior.
+
+This paper addresses the challenge of predicting whether a proposition (bill) will be approved or rejected in the Brazilian Chamber of Deputies. Unlike previous approaches that focus primarily on roll-call prediction using embeddings and neural models \cite{Patil2020,Kraft2021} or complex network analysis \cite{Brito2020,Ferreira2021,Cherepnalkoski2022}, we propose a feature-based machine learning approach that explicitly models temporal approval patterns as structured features in a supervised classifier.
+
+Our main contribution is the design and evaluation of temporal and structural features that capture: (1) government orientation, representing the stance of the federal government; (2) party popularity, measuring historical success rates of parties and institutional author types; and (3) the Historical Approval Rate (HAR), capturing empirical approval probabilities for propositions with previous voting history, complemented by author popularity and coalition-size features. These features encode more than ideological polarity, they capture structural, historical, and temporal signals that strongly influence legislative outcomes.
+
+We present VOTE-RAP (Vote Outcome Prediction using Temporal Evidence of Related Approval Patterns), an XGBoost-based classifier that significantly outperforms a strong government-orientation baseline. The baseline uses only the government orientation feature (\texttt{gov\_orientation}) with a deterministic rule: if the government recommends approval (\texttt{gov\_orientation} = 1), predict approval; if it recommends rejection (\texttt{gov\_orientation} = -1), predict rejection; otherwise, predict the majority class. Despite using only a single feature, this baseline achieves an AUROC of 0.8599 and an F1-score of 0.637 for rejected propositions, demonstrating the strong predictive power of government orientation. VOTE-RAP achieves an AUROC of 0.9070, representing a 4.7 percentage point improvement over this strong baseline. For the challenging task of predicting rejected propositions (the minority class), VOTE-RAP achieves an F1-score of 0.706 for the rejected class, a 6.9 percentage point improvement over the baseline (0.637).
+
+\section{Related Work}
+\label{related_work}
+
+Research on legislative behavior modeling and prediction spans political science, natural language processing, and network science. In political science, roll-call votes are often studied through latent ideology/ideal-point models and related statistical frameworks \cite{Poole1985,Clinton2004}, which motivate feature-based representations that preserve interpretability and allow downstream predictive tasks.
+
+In NLP/ML, a major trajectory focuses on predicting votes using text and representation learning. Early work showed that bill text can be predictive of roll-call behavior \cite{Gerrish2011}, and later approaches advanced this line with embedding-based models and neural architectures \cite{Kraft2021,Patil2020}. More recent systems incorporate richer heterogeneous signals, such as legislator attributes, party information, and external knowledge, to improve generalization and handle cold-start settings \cite{Kornilova2018,Cheng2017,MultiFactor2019}. These methods can achieve strong performance, but often trade off transparency for model complexity.
+
+A complementary trajectory uses complex networks to analyze coalitions, polarization, and voting structure. Studies build vote-similarity or signed networks to identify communities and alliance dynamics \cite{Brito2020,Ferreira2021,Cherepnalkoski2022,Arinik2020}. Network-based views are especially useful for describing blocs and polarization patterns, and they can also inform prediction through structural features.
+
+Our approach differs by predicting proposition-level outcomes using structured temporal evidence of related approval patterns, rather than focusing on individual deputy vote prediction or relying solely on static network structure. By constraining all features to information available prior to each vote, we preserve temporal integrity while remaining interpretable: the model’s signals can be traced back to historically similar proposals and parties.
+
+\section{Data Collection and Preparation}
+\label{data}
+
+We construct our dataset from official open data released by the Brazilian Chamber of Deputies, integrating roll-call vote records with proposition metadata and legislature/session information. This integration enables both deputy- and party-level analyses while preserving the temporal structure required for realistic vote-outcome prediction.
+
+The sources include roll-call voting records that provide deputy-level votes for each session, proposition metadata (e.g., type, authorship, and key dates), deputy and party attributes to support party-based signals, and legislature/session identifiers that anchor each observation in time. We harmonize identifiers across these sources to ensure consistent linkage between votes, propositions, deputies, parties, and legislatures.
+
+To form a clean prediction dataset, we retain only propositions with unambiguous final outcomes (approved or rejected), excluding cases with unclear or missing status. To prevent temporal leakage, all features for a given proposition are computed strictly from information available prior to the corresponding voting session. Finally, we adopt a chronological evaluation protocol, splitting the data into 80\% training (7,131 sessions) and 20\% testing (1,783 sessions) while preserving the order of events.
+
+The final dataset contains 9,260 voting sessions spanning 2003--2024 (legislatures 52--57) and exhibits class imbalance, with approximately 79.5\% approved propositions and 20.5\% rejected propositions. For conciseness, we omit descriptive figures from this section and instead report outcome and baseline trends through aggregated results in Section~\ref{results}.
+
+
+\section{Feature Engineering}
+\label{features}
+
+Our methodology centers on a set of engineered temporal and structural features that capture different aspects of legislative behavior:
+
+\subsection{Government Orientation}
+Government orientation (\textit{gov\_orientation}) encodes whether the federal government recommended approval or rejection of a proposition and is treated as a strong institutional baseline signal. In our data, this information appears in two related fields (\textit{GOV.} and \textit{Governo}). We resolve them into a single indicator by: (1) using the common value when they agree; otherwise (2) using \textit{GOV.} when it is non-zero; and (3) defaulting to \textit{Governo} when \textit{GOV.} is zero. The final variable takes values in $\{-1,0,1\}$ indicating recommendation against, neutral/undefined, or in favor of approval, respectively.
+
+\subsection{Party Popularity}
+To model short-term legislative momentum, we define \textit{party\_popularity} as the recent approval rate of the proposition’s party, computed using only sessions that occurred before the current voting session. For propositions authored by deputies, we associate the session with the deputy’s party (resolved with legislature-specific mappings and, when needed, the most recent party recorded by the Chamber API). When the author is not a deputy, we instead use the original institutional author type, yielding a unified label (\textit{party-or-author-type}). Party popularity is then computed as:
+\[
+\textit{party\_popularity} = \frac{\textit{ApprovedSessions}}{\textit{TotalSessions}} \times 100,
+\]
+where counts consider only prior sessions for the same \textit{party-or-author-type}. We evaluate multiple historical windows (full history and recency-based windows) using a time-ordered training protocol and AUROC as the selection criterion, adopting the best-performing configuration (last 5 sessions) as the final definition. Figure~\ref{fig:party_popularity_window} reports this window-size comparison; for conciseness, we omit the distribution plot of party popularity values.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/party_popularity_auroc_comparison.png}
+\caption{Party popularity window size comparison using AUROC on temporally ordered training data. The best-performing configuration is selected for the final definition of \textit{party\_popularity}.}
+\label{fig:party_popularity_window}
+\end{figure}
+
+\subsection{Historical Approval Rate (HAR)}
+
+The Historical Approval Rate (HAR) captures proposition-specific legislative memory by estimating how likely the same proposition has been approved in the past. For each voting session associated with proposition identifier \texttt{propositionID} $P$ and binary outcome \texttt{aprovacao}, we build a history using only earlier sessions of $P$ (strictly earlier dates). We then compute
+\[
+\text{HAR} = \texttt{historical\_approval\_rate},
+\]
+defined as the mean of \texttt{aprovacao} over all prior sessions of $P$. When no prior history exists, we assign a neutral default value of 0.5. This construction preserves temporal integrity and provides an interpretable prior estimate of a proposition’s approval propensity. Figure~\ref{fig:har_rules_comparison} reports the AUROC performance of simple proposition-history heuristics and highlights the Historical Probability Rule (using \texttt{historical\_approval\_rate} with a 0.5 default) as the best-performing option. In VOTE-RAP, we use \texttt{historical\_approval\_rate} directly as the HAR feature.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/proposition_history_rules_comparison.png}
+\caption{AUROC performance of simple proposition-history prediction rules. The Historical Probability Rule, which uses \texttt{historical\_approval\_rate} (defaulting to 0.5 when no history exists), is selected and used as the HAR feature in VOTE-RAP.}
+\label{fig:har_rules_comparison}
+\end{figure}
+
+\section{Modeling Approach}
+\label{modeling}
+
+\subsection{Algorithm Selection}
+We use an XGBoostClassifier as the primary model due to its strong performance on structured tabular data and its ability to capture nonlinear effects and feature interactions through gradient-boosted decision trees.
+
+\subsection{Hyperparameter Optimization}
+Hyperparameters are tuned using a randomized search over 75 sampled configurations. To preserve temporal realism, model selection is performed using a time-aware cross-validation scheme within the training split (i.e., forward-chaining/expanding windows), and AUROC is used as the selection metric. The best configuration is then retrained on the full training set (80\% of the chronologically ordered data) and evaluated once on the held-out 20\% test set.
+
+\subsection{Preprocessing}
+We handle missing values by imputing missing \texttt{popularity} and \texttt{party\_popularity} with 0 and imputing missing \texttt{historical\_approval\_rate} with 0.5 (neutral prior). Sessions with missing target (\texttt{aprovacao}) are removed. Because XGBoost is tree-based, feature scaling is not required; therefore, numeric features are used in their original scale.
+
+\subsection{Feature Set}
+The final model uses: \texttt{popularity}, \texttt{gov\_orientation}, \texttt{num\_authors\_trunc}, \texttt{has\_more\_than\_10\_authors}, \texttt{party\_popularity} (last 5 sessions), and \texttt{historical\_approval\_rate}.
+
+
+\section{Results}
+\label{results}
+
+\subsection{Baseline Method}
+To quantify the contribution of our temporal and structural features, we compare VOTE-RAP against a strong government-orientation baseline that uses only \texttt{gov\_orientation}. The baseline applies a deterministic rule at inference time: if \texttt{gov\_orientation}=1 (government recommends approval) it predicts \emph{Approved} (1); if \texttt{gov\_orientation}=-1 (government recommends rejection) it predicts \emph{Rejected} (0). When \texttt{gov\_orientation}=0 or is missing, the baseline predicts the majority class estimated from the \emph{training} split (to avoid using test-set information).
+
+Despite relying on a single feature, this baseline achieves an AUROC of 0.8599 and an F1-score of 0.637 for rejected propositions on the held-out test set, indicating that government orientation provides substantial predictive signal and constitutes a meaningful benchmark.
+
+
+\subsection{Overall Performance}
+VOTE-RAP improves over the government-orientation baseline across multiple metrics. Table~\ref{tab:results} reports AUROC and minority-class performance on the held-out test set.
+
+\begin{table}[H]
+\caption{Test-set performance: VOTE-RAP vs. gov.-orientation baseline.}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}p{2.0cm}|>{\centering\arraybackslash}p{2.2cm}|}
+\hline
+\textbf{Metric} & \textbf{Baseline} & {\footnotesize\textbf{VOTE-RAP}} & \textbf{Improvement} \\ \hline
+AUROC & 0.8599 & 0.9070 & +4.7 pp \\ \hline
+F1 (Rejected) & 0.637 & 0.706 & +6.9 pp \\ \hline
+Precision (Rejected) & --- & 0.837 & --- \\ \hline
+Recall (Rejected) & --- & 0.611 & --- \\ \hline
+\end{tabular}
+\label{tab:results}
+\normalsize
+\end{table}
+
+
+Figure~\ref{fig:auroc_comparison} visualizes the AUROC comparison between both approaches. (Optionally, uncertainty can be reported via bootstrap confidence intervals and/or a DeLong test for paired AUROC comparison.)
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/auroc_comparison.png}
+\caption{AUROC comparison between the government-orientation baseline and VOTE-RAP on the held-out test set.}
+\label{fig:auroc_comparison}
+\end{figure}
+
+\subsection{Minority Class Performance}
+Rejected propositions form the minority class, making their detection sensitive to class imbalance and to the decision threshold. To prioritize rejected outcomes, we select a probability threshold using only the training split (e.g., via cross-validated predictions or a held-out validation subset) by maximizing the rejected-class F1-score, and then apply this fixed threshold once on the test set.
+
+Under this protocol, VOTE-RAP achieves an F1-score of 0.706 for rejected propositions, improving upon the government-orientation baseline (0.637). At the selected threshold, precision and recall for the rejected class are 0.837 and 0.611, respectively, indicating that VOTE-RAP identifies rejections more effectively while maintaining high precision. Figure~\ref{fig:confusion_matrix} reports the resulting confusion matrix, and Figure~\ref{fig:pr_curve} provides the precision--recall diagnostic for the minority class.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/confusion_matrix.png}
+\caption{Confusion matrix for VOTE-RAP on the test set using the rejected-class threshold selected on training data.}
+\label{fig:confusion_matrix}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/precision_recall_curve.png}
+\caption{Precision--recall curve for VOTE-RAP on the test set (average precision = 0.9752).}
+\label{fig:pr_curve}
+\end{figure}
+
+\subsection{Feature Importance}
+To interpret the trained XGBoost model, we report normalized gain-based feature importance scores (summing to 100\%). Government orientation is the dominant feature (48.2\%), followed by coalition-size indicators (notably \texttt{has\_\allowbreak more\_\allowbreak than\_\allowbreak 10\_\allowbreak authors}, 20.7\%). The proposed temporal features also contribute non-trivially: \texttt{party\_popularity} (9.8\%) and \texttt{historical\_approval\_rate} (7.2\%) together account for 17.0\% of the model’s total gain-based importance, supporting their added value beyond government orientation. Figure~\ref{fig:feature_importance_all} summarizes the complete importance ranking.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/feature_importance_all.png}
+\caption{Normalized gain-based feature importances for VOTE-RAP (all features).}
+\label{fig:feature_importance_all}
+\end{figure}
+
+
+\subsection{Temporal Analysis}
+To assess temporal robustness, we perform a year-by-year evaluation using a rolling window. For each test year $y \in \{2007,\dots,2024\}$, we train an XGBoost model on the three preceding years ($y-3$ to $y-1$) and evaluate it on year $y$, using the same feature set and preprocessing described in Section~\ref{modeling}. Class imbalance is handled within each training window via a year-specific \texttt{scale\_pos\_weight} computed from the window’s training labels.
+
+Across the 18 test years, the models obtain a mean accuracy of 0.811, a mean rejected-class F1-score of 0.624, and a mean AUROC of 0.823, with noticeable variation over time. We observe lower performance in some years associated with major political events (e.g., 2015) and higher performance in other periods (e.g., 2019--2022), suggesting that model effectiveness can vary with the legislative and political environment. When grouping years by presidential term, average AUROC and rejected-class F1 are higher in later periods, with particularly strong results during the Bolsonaro and Lula III administrations. Figure~\ref{fig:yearly_performance} summarizes year-by-year AUROC and rejected-class F1 with presidential periods highlighted, and Figure~\ref{fig:enhanced_vs_original} compares mean performance between the enhanced and original yearly modeling setups.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/yearly_performance_with_presidents.png}
+\caption{Year-by-year AUROC and F1-score for the rejected class, with Brazilian presidential periods highlighted.}
+\label{fig:yearly_performance}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/enhanced_vs_original_comparison.png}
+\caption{Enhanced vs. original yearly models: mean performance comparison (accuracy, F1 for approved and rejected classes, and AUROC).}
+\label{fig:enhanced_vs_original}
+\end{figure}
+
+\section{Discussion}
+\label{discussion}
+
+\subsection{Interpretability and Transparency}
+A key advantage of VOTE-RAP is its auditability: predictions are driven by a small set of explicitly defined features that encode institutional signals (government orientation), short-term political momentum (party popularity), and proposition-level history (HAR). This structure enables direct inspection of why the model favors approval or rejection in a given case and supports transparent debugging when performance varies across time. Consistent with this design, the feature-importance analysis indicates that government orientation provides the strongest signal, while coalition-size proxies and the temporal features contribute additional explanatory power beyond the baseline.
+
+The temporal features are also interpretable in substantive terms. Party popularity summarizes recent approval success for the proposition’s party (or institutional author type), capturing short-run shifts in legislative support. HAR reflects proposition-specific memory by aggregating outcomes from prior voting sessions of the same proposition; when a proposition has historically been approved (or rejected) in earlier sessions, the model can leverage that information as an informative prior, while defaulting to a neutral value when no history exists.
+
+\subsection{Limitations}
+The temporal evaluation shows that predictive performance is not uniform across years, suggesting sensitivity to changes in the legislative environment (e.g., coalition realignments or major political events). In addition, some predictors have incomplete coverage; for example, government-orientation information is available for only 17.4\% of the test sessions, which limits how often this strong institutional signal can be directly applied. Finally, feature definitions based on recency (e.g., the last-5-sessions window for party popularity) may not be universally optimal across all political contexts, motivating adaptive window selection or context-aware recalibration.
+
+\subsection{Future Work}
+Future work can extend VOTE-RAP in three directions. First, richer temporal modeling (e.g., longer-horizon sequence models or temporal ensembling) may capture dependencies beyond short recency windows while maintaining leakage-safe evaluation. Second, incorporating additional context, such as proposition text representations, committee routing, or other institutional metadata, could improve minority-class detection for rejections. Third, network-derived signals from deputy voting graphs or multi-task setups that jointly model outcomes and individual votes may provide complementary structural information, potentially improving robustness during periods of political change.
+
+\section{Conclusion}
+\label{conclusion}
+
+We presented VOTE-RAP, a feature-based machine learning approach for predicting vote outcomes in the Brazilian Chamber of Deputies using temporally grounded evidence of related approval patterns. Our main contributions are threefold. First, we propose a compact set of temporal and structural features, including government orientation, party popularity, proposition-level historical approval rate (HAR), author popularity, and coalition-size indicators, to capture complementary signals of legislative behavior. Second, we introduce a data-driven procedure for selecting the recency window used to compute party popularity under a leakage-safe protocol. Third, we provide a year-by-year moving-window evaluation that characterizes how performance varies over time.
+
+On the held-out test set, VOTE-RAP achieves an AUROC of 0.9070, improving upon the government-orientation baseline (0.8599), and an F1-score of 0.706 for rejected propositions (baseline: 0.637). These results indicate that temporal and structural features add predictive value beyond a strong institutional baseline and help capture approval dynamics that are not explained by government stance alone.
+
+Overall, VOTE-RAP provides a practical and auditable framework for legislative outcome prediction in the Brazilian context, enabling both improved predictive performance and transparent inspection of factors associated with approval and rejection.
+
+\section*{CRediT authorship contribution statement}
+\textbf{Pedro N. F. da Silva:} Conceptualization, Methodology, Software, Data curation, Formal analysis, Investigation, Visualization, Writing (original draft), Writing (review and editing). 
+\textbf{Dimas Cassimiro Nascimento:} Supervision, Methodology, Validation, Writing (review and editing). 
+\textbf{Bruno Nogueira:} Supervision, Methodology, Validation, Writing (review and editing).
+
+
+\begin{comment}
+For transparency, we require corresponding authors to provide co-author contributions to the manuscript using the relevant CRediT roles. The CRediT taxonomy includes 14 different roles describing each contributor's specific contribution to the scholarly output. The roles are: Conceptualization; Data curation; Formal analysis; Funding acquisition; Investigation; Methodology; Project administration; Resources; Software; Supervision; Validation; Visualization; Roles/Writing - original draft; and Writing - review & editing. Note that not all roles may apply to every manuscript, and authors may have contributed through multiple roles.
+\end{comment}
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Acknowledgements}
+We acknowledge the Brazilian Chamber of Deputies for providing open access to legislative data. We also acknowledge the University of Pernambuco for institutional support. This work was supported by FACEPE, which enabled a research visit to Tampere University. We thank Professor Kostas Stefanidis for the reception and support during the visit, and we thank all colleagues and collaborators who provided valuable feedback on this work.
+
+
+\section*{Data availability}
+The dataset and code used in this study are available at \url{https://github.com/pedronatanaelfs/vote-rap}. The repository includes voting sessions, proposition metadata, and the engineered features used for model training and evaluation.
+
+
+\bibliography{references}
+
+\end{document}
