@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from sklearn.metrics import roc_auc_score, accuracy_score
+import shutil
 import warnings
 import sys
 from datetime import datetime
@@ -29,6 +30,13 @@ np.random.seed(42)
 BASE_DIR = Path(__file__).parent.parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = Path(__file__).parent
+FEATURES_DIR = DATA_DIR / "features"
+RESULTS_DIR = BASE_DIR / "results" / "feature_engineering" / "historical_approval_rate"
+PAPER_FIG_DIR = BASE_DIR / "article" / "figures"
+
+FEATURES_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+PAPER_FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Setup output logging to file
 class TeeOutput:
@@ -307,8 +315,16 @@ ax.axhline(y=0.7, color='green', linestyle='--', alpha=0.7, linewidth=2, label='
 ax.legend()
 
 plt.tight_layout()
-plt.savefig('proposition_history_rules_comparison.png', dpi=300, bbox_inches='tight')
-print(f"\nChart saved as: proposition_history_rules_comparison.png")
+plot_path = RESULTS_DIR / "proposition_history_rules_comparison.png"
+plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+print(f"\nChart saved as: {plot_path}")
+
+# Keep a copy under article/figures for the paper build
+try:
+    shutil.copyfile(plot_path, PAPER_FIG_DIR / plot_path.name)
+    print(f"Copied to paper figures: {PAPER_FIG_DIR / plot_path.name}")
+except Exception as e:
+    print(f"Warning: failed to copy plot to article/figures: {e}")
 
 # Generate final dataset with best rule
 print("\n" + "=" * 80)
@@ -352,8 +368,8 @@ if best_rule_func:
         'prediction_rule': best_rule_name
     })
     
-    # Save to CSV
-    output_filename = f'proposition_history_predictions_{best_rule_name.lower().replace(" ", "_").replace("(", "").replace(")", "")}.csv'
+    # Save to CSV (centralized under data/features)
+    output_filename = FEATURES_DIR / f'proposition_history_predictions_{best_rule_name.lower().replace(" ", "_").replace("(", "").replace(")", "")}.csv'
     final_output.to_csv(output_filename, index=False)
     
     print(f"\nFINAL DATASET SUMMARY:")

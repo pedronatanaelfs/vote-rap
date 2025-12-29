@@ -35,9 +35,9 @@ And writes all console output to:
 The script reads:
 
 1) `data/vote_sessions_full.csv` (base)  
-2) `scripts/01-feature-engineering/Author's Popularity/author_popularity.csv` → `popularity`  
-3) `scripts/01-feature-engineering/Party Popularity/party_popularity_best_window_last_5_sessions.csv` → `party_popularity`  
-4) `scripts/01-feature-engineering/Historical Approval Rate/proposition_history_predictions_historical_probability_rule.csv` → `historical_approval_rate`
+2) `data/features/author_popularity.csv` → `popularity`  
+3) `data/features/party_popularity_best_window_last_5_sessions.csv` → `party_popularity`  
+4) `data/features/proposition_history_predictions_historical_probability_rule.csv` → `historical_approval_rate`
 
 Merge logic:
 - Start from `vote_sessions_full.csv`

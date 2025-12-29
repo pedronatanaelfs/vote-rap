@@ -22,9 +22,10 @@ vote-rap/
 ├── .gitignore                         # Git ignore rules
 ├── data/                              # Data files
 │   ├── vote_sessions_full.csv         # Main voting sessions dataset
-│   ├── author_popularity.csv          # Author popularity features
-│   ├── party_popularity_best_window_last_5_sessions.csv  # Party popularity features
-│   ├── proposition_history_predictions_historical_probability_rule.csv  # Historical approval rate
+│   ├── features/                      # Engineered feature files used by the models
+│   │   ├── author_popularity.csv      # Author popularity features
+│   │   ├── party_popularity_best_window_last_5_sessions.csv  # Party popularity features
+│   │   └── proposition_history_predictions_historical_probability_rule.csv  # Historical approval rate
 │   └── voting_sessions_orientations_clean.csv  # Vote orientation data
 ├── scripts/
 │   ├── 00 - Data Aquisition/         # Data acquisition scripts

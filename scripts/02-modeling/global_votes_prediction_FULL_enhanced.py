@@ -13,8 +13,11 @@ and generates the following outputs in the same folder:
 8. distribution_party_popularity.png - Party popularity distribution histogram
 9. distribution_historical_approval_rate.png - Historical approval rate distribution histogram
 10. correlation_matrix_new_features.png - Correlation matrix of new features
-11. auroc_comparison.png - VOTE-RAP vs Baseline comparison
-12. f1_comparison.png - F1-Score comparison for rejected class
+11. baselines_auroc_comparison.png - Comprehensive AUROC comparison (all baselines)
+12. baselines_f1_rejected_comparison.png - Comprehensive F1 rejected comparison (all baselines)
+13. baselines_comprehensive_metrics.png - Full metrics heatmap (all baselines)
+14. auroc_comparison.png - VOTE-RAP vs Previous Baseline comparison
+15. f1_comparison.png - F1-Score comparison for rejected class
 
 REPRODUCIBILITY:
 - Random seeds are set (np.random.seed(42), random.seed(42))
@@ -34,7 +37,7 @@ from xgboost import XGBClassifier
 from sklearn.metrics import (
     precision_recall_curve, f1_score, classification_report, confusion_matrix,
     make_scorer, roc_auc_score, precision_score, recall_score, roc_curve,
-    average_precision_score
+    average_precision_score, accuracy_score
 )
 from sklearn.model_selection import (
     GridSearchCV, StratifiedKFold, RandomizedSearchCV, train_test_split
@@ -53,7 +56,8 @@ np.random.seed(RANDOM_SEED)
 # Set paths
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = Path(__file__).parent
+OUTPUT_DIR = BASE_DIR / "results" / "modeling" / "full_enhanced"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Setup output logging to file
 class TeeOutput:
@@ -110,15 +114,15 @@ vote_sessions = pd.read_csv(
              "author_type", "num_authors", "theme", "legislatura", "Governo", "Oposição", "GOV."]
 )
 authors_pop = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Author's Popularity" / "author_popularity.csv",
+    DATA_DIR / "features" / "author_popularity.csv",
     usecols=["idVotacao", "popularity"]
 )
 party_popularity = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Party Popularity" / "party_popularity_best_window_last_5_sessions.csv",
+    DATA_DIR / "features" / "party_popularity_best_window_last_5_sessions.csv",
     usecols=["id", "party_popularity"]
 )
 historical_data = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Historical Approval Rate" / "proposition_history_predictions_historical_probability_rule.csv",
+    DATA_DIR / "features" / "proposition_history_predictions_historical_probability_rule.csv",
     usecols=["id", "historical_approval_rate"]
 )
 
@@ -594,6 +598,319 @@ plt.close()
 print("   Saved: correlation_matrix_new_features.png")
 
 # =====================================================
+# COMPREHENSIVE BASELINE COMPARISON
+# =====================================================
+
+print("\n" + "=" * 80)
+print("COMPREHENSIVE BASELINE COMPARISON")
+print("=" * 80)
+
+# Initialize results storage
+baseline_results = []
+
+# 1. RANDOM GUESS BASELINE
+print("\n1. Random Guess Baseline")
+np.random.seed(42)
+random_preds = np.random.randint(0, 2, size=len(y_test))
+random_probs = np.random.random(size=len(y_test))
+
+random_accuracy = accuracy_score(y_test, random_preds)
+random_precision_approved = precision_score(y_test, random_preds, pos_label=1, zero_division=0)
+random_precision_rejected = precision_score(y_test, random_preds, pos_label=0, zero_division=0)
+random_recall_approved = recall_score(y_test, random_preds, pos_label=1, zero_division=0)
+random_recall_rejected = recall_score(y_test, random_preds, pos_label=0, zero_division=0)
+random_f1_approved = f1_score(y_test, random_preds, pos_label=1, zero_division=0)
+random_f1_rejected = f1_score(y_test, random_preds, pos_label=0, zero_division=0)
+random_auroc = roc_auc_score(y_test, random_probs)
+
+baseline_results.append({
+    'model': 'Random Guess',
+    'accuracy': random_accuracy,
+    'precision_approved': random_precision_approved,
+    'precision_rejected': random_precision_rejected,
+    'recall_approved': random_recall_approved,
+    'recall_rejected': random_recall_rejected,
+    'f1_approved': random_f1_approved,
+    'f1_rejected': random_f1_rejected,
+    'auroc': random_auroc
+})
+
+print(f"  Accuracy: {random_accuracy:.4f}")
+print(f"  F1 Rejected: {random_f1_rejected:.4f}")
+print(f"  AUROC: {random_auroc:.4f}")
+
+# 2. MAJORITY CLASS BASELINE
+print("\n2. Majority Class Baseline")
+majority_class = int(y_train.mean() >= 0.5)  # 1 if majority is approved
+majority_preds = np.full(len(y_test), majority_class)
+majority_probs = np.full(len(y_test), 1.0 if majority_class == 1 else 0.0)
+
+majority_accuracy = accuracy_score(y_test, majority_preds)
+majority_precision_approved = precision_score(y_test, majority_preds, pos_label=1, zero_division=0)
+majority_precision_rejected = precision_score(y_test, majority_preds, pos_label=0, zero_division=0)
+majority_recall_approved = recall_score(y_test, majority_preds, pos_label=1, zero_division=0)
+majority_recall_rejected = recall_score(y_test, majority_preds, pos_label=0, zero_division=0)
+majority_f1_approved = f1_score(y_test, majority_preds, pos_label=1, zero_division=0)
+majority_f1_rejected = f1_score(y_test, majority_preds, pos_label=0, zero_division=0)
+majority_auroc = roc_auc_score(y_test, majority_probs)
+
+baseline_results.append({
+    'model': 'Majority Class',
+    'accuracy': majority_accuracy,
+    'precision_approved': majority_precision_approved,
+    'precision_rejected': majority_precision_rejected,
+    'recall_approved': majority_recall_approved,
+    'recall_rejected': majority_recall_rejected,
+    'f1_approved': majority_f1_approved,
+    'f1_rejected': majority_f1_rejected,
+    'auroc': majority_auroc
+})
+
+print(f"  Accuracy: {majority_accuracy:.4f}")
+print(f"  F1 Rejected: {majority_f1_rejected:.4f}")
+print(f"  AUROC: {majority_auroc:.4f}")
+
+# 3. GOVERNMENT ORIENTATION BASELINE
+print("\n3. Government Orientation Baseline")
+test_indices = X_test_model.index
+test_gov_orientation = merged_df.loc[test_indices, 'gov_orientation'].values
+
+gov_orientation_preds = np.where(test_gov_orientation == 1, 1,
+                                 np.where(test_gov_orientation == -1, 0,
+                                         np.round(y_test.mean())))
+# For AUROC, we need probabilities - use a simple heuristic
+gov_orientation_probs = np.where(test_gov_orientation == 1, 0.8,
+                                np.where(test_gov_orientation == -1, 0.2,
+                                        y_test.mean()))
+
+gov_orientation_accuracy = accuracy_score(y_test, gov_orientation_preds)
+gov_orientation_precision_approved = precision_score(y_test, gov_orientation_preds, pos_label=1, zero_division=0)
+gov_orientation_precision_rejected = precision_score(y_test, gov_orientation_preds, pos_label=0, zero_division=0)
+gov_orientation_recall_approved = recall_score(y_test, gov_orientation_preds, pos_label=1, zero_division=0)
+gov_orientation_recall_rejected = recall_score(y_test, gov_orientation_preds, pos_label=0, zero_division=0)
+gov_orientation_f1_approved = f1_score(y_test, gov_orientation_preds, pos_label=1, zero_division=0)
+gov_orientation_f1_rejected = f1_score(y_test, gov_orientation_preds, pos_label=0, zero_division=0)
+gov_orientation_auroc = roc_auc_score(y_test, gov_orientation_probs)
+
+baseline_results.append({
+    'model': 'Government Orientation',
+    'accuracy': gov_orientation_accuracy,
+    'precision_approved': gov_orientation_precision_approved,
+    'precision_rejected': gov_orientation_precision_rejected,
+    'recall_approved': gov_orientation_recall_approved,
+    'recall_rejected': gov_orientation_recall_rejected,
+    'f1_approved': gov_orientation_f1_approved,
+    'f1_rejected': gov_orientation_f1_rejected,
+    'auroc': gov_orientation_auroc
+})
+
+print(f"  Accuracy: {gov_orientation_accuracy:.4f}")
+print(f"  F1 Rejected: {gov_orientation_f1_rejected:.4f}")
+print(f"  AUROC: {gov_orientation_auroc:.4f}")
+
+# 4. PREVIOUS BASELINE MODEL (hard-coded)
+print("\n4. Previous Baseline Model")
+governo_auroc = 0.8599
+# For other metrics, we'll estimate based on typical performance or leave as N/A
+# Since we only have AUROC, we'll use placeholder values for display
+baseline_results.append({
+    'model': 'Previous Baseline',
+    'accuracy': np.nan,  # Not available
+    'precision_approved': np.nan,
+    'precision_rejected': np.nan,
+    'recall_approved': np.nan,
+    'recall_rejected': np.nan,
+    'f1_approved': np.nan,
+    'f1_rejected': np.nan,
+    'auroc': governo_auroc
+})
+
+print(f"  AUROC: {governo_auroc:.4f} (other metrics not available)")
+
+# 5. VOTE-RAP (Current Model)
+print("\n5. VOTE-RAP (Current Model)")
+vote_rap_accuracy = accuracy_score(y_test, y_pred_xgb_f1_0)
+vote_rap_precision_approved = precision_score(y_test, y_pred_xgb_f1_0, pos_label=1, zero_division=0)
+vote_rap_precision_rejected = precision_score(y_test, y_pred_xgb_f1_0, pos_label=0, zero_division=0)
+vote_rap_recall_approved = recall_score(y_test, y_pred_xgb_f1_0, pos_label=1, zero_division=0)
+vote_rap_recall_rejected = recall_score(y_test, y_pred_xgb_f1_0, pos_label=0, zero_division=0)
+vote_rap_f1_approved = f1_score(y_test, y_pred_xgb_f1_0, pos_label=1, zero_division=0)
+vote_rap_f1_rejected = f1_score(y_test, y_pred_xgb_f1_0, pos_label=0, zero_division=0)
+vote_rap_auroc = xgb_auroc_refined
+
+baseline_results.append({
+    'model': 'VOTE-RAP',
+    'accuracy': vote_rap_accuracy,
+    'precision_approved': vote_rap_precision_approved,
+    'precision_rejected': vote_rap_precision_rejected,
+    'recall_approved': vote_rap_recall_approved,
+    'recall_rejected': vote_rap_recall_rejected,
+    'f1_approved': vote_rap_f1_approved,
+    'f1_rejected': vote_rap_f1_rejected,
+    'auroc': vote_rap_auroc
+})
+
+print(f"  Accuracy: {vote_rap_accuracy:.4f}")
+print(f"  F1 Rejected: {vote_rap_f1_rejected:.4f}")
+print(f"  AUROC: {vote_rap_auroc:.4f}")
+
+# Convert to DataFrame for easier manipulation
+baseline_df = pd.DataFrame(baseline_results)
+
+# =====================================================
+# VISUALIZATION 1: Multi-Baseline AUROC Comparison
+# =====================================================
+
+print("\nGenerating multi-baseline AUROC comparison...")
+fig, ax = plt.subplots(1, 1, figsize=(12, 7))
+
+models = baseline_df['model'].tolist()
+aurocs = baseline_df['auroc'].tolist()
+
+# Color scheme: red for naive, orange for simple, gray for previous, blue for VOTE-RAP
+colors = ['#E74C3C', '#E67E22', '#95A5A6', '#7F8C8D', '#2E86AB']
+
+bars = ax.barh(models, aurocs, color=colors, alpha=0.85, edgecolor='black', linewidth=1.5)
+
+# Add value labels
+for i, (bar, auroc) in enumerate(zip(bars, aurocs)):
+    if not np.isnan(auroc):
+        ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2,
+                f'{auroc:.4f}', ha='left', va='center', fontweight='bold', fontsize=11)
+
+ax.set_xlabel('AUROC Score', fontsize=13, fontweight='bold')
+ax.set_title('Comprehensive Baseline Comparison - AUROC', fontsize=16, fontweight='bold', pad=20)
+ax.set_xlim(0.4, max([a for a in aurocs if not np.isnan(a)]) * 1.15)
+ax.grid(axis='x', alpha=0.3)
+ax.set_axisbelow(True)
+
+# Add improvement annotations
+vote_rap_auroc_val = vote_rap_auroc
+for i, model in enumerate(models):
+    if model != 'VOTE-RAP' and not np.isnan(aurocs[i]):
+        improvement = vote_rap_auroc_val - aurocs[i]
+        improvement_pct = (improvement / aurocs[i]) * 100 if aurocs[i] > 0 else 0
+        if improvement > 0.01:  # Only show significant improvements
+            ax.annotate(f'+{improvement_pct:.1f}%',
+                       xy=(aurocs[i], i),
+                       xytext=(aurocs[i] + improvement/2, i),
+                       arrowprops=dict(arrowstyle='->', color='#27AE60', lw=2, alpha=0.7),
+                       fontsize=10, fontweight='bold', color='#27AE60',
+                       ha='center')
+
+plt.tight_layout()
+plt.savefig(OUTPUT_DIR / 'baselines_auroc_comparison.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("   Saved: baselines_auroc_comparison.png")
+
+# =====================================================
+# VISUALIZATION 2: Multi-Baseline F1 Rejected Comparison
+# =====================================================
+
+print("\nGenerating multi-baseline F1 rejected comparison...")
+fig, ax = plt.subplots(1, 1, figsize=(12, 7))
+
+f1_rejected_scores = baseline_df['f1_rejected'].tolist()
+
+bars = ax.barh(models, f1_rejected_scores, color=colors, alpha=0.85, edgecolor='black', linewidth=1.5)
+
+# Add value labels
+for i, (bar, f1_val) in enumerate(zip(bars, f1_rejected_scores)):
+    if not np.isnan(f1_val):
+        ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2,
+                f'{f1_val:.4f}', ha='left', va='center', fontweight='bold', fontsize=11)
+
+ax.set_xlabel('F1-Score (Rejected Class)', fontsize=13, fontweight='bold')
+ax.set_title('Comprehensive Baseline Comparison - F1-Score for Rejected Propositions', 
+             fontsize=16, fontweight='bold', pad=20)
+max_f1 = max([f for f in f1_rejected_scores if not np.isnan(f)])
+ax.set_xlim(0, max_f1 * 1.2)
+ax.grid(axis='x', alpha=0.3)
+ax.set_axisbelow(True)
+
+# Add improvement annotations
+vote_rap_f1_val = vote_rap_f1_rejected
+for i, model in enumerate(models):
+    if model != 'VOTE-RAP' and not np.isnan(f1_rejected_scores[i]):
+        improvement = vote_rap_f1_val - f1_rejected_scores[i]
+        improvement_pct = (improvement / f1_rejected_scores[i]) * 100 if f1_rejected_scores[i] > 0 else 0
+        if improvement > 0.01:  # Only show significant improvements
+            ax.annotate(f'+{improvement_pct:.1f}%',
+                       xy=(f1_rejected_scores[i], i),
+                       xytext=(f1_rejected_scores[i] + improvement/2, i),
+                       arrowprops=dict(arrowstyle='->', color='#27AE60', lw=2, alpha=0.7),
+                       fontsize=10, fontweight='bold', color='#27AE60',
+                       ha='center')
+
+plt.tight_layout()
+plt.savefig(OUTPUT_DIR / 'baselines_f1_rejected_comparison.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("   Saved: baselines_f1_rejected_comparison.png")
+
+# =====================================================
+# VISUALIZATION 3: Comprehensive Metrics Heatmap
+# =====================================================
+
+print("\nGenerating comprehensive metrics heatmap...")
+
+# Prepare data for heatmap (only models with complete metrics)
+metrics_for_heatmap = ['accuracy', 'precision_approved', 'precision_rejected', 
+                       'recall_approved', 'recall_rejected', 
+                       'f1_approved', 'f1_rejected', 'auroc']
+heatmap_df = baseline_df[['model'] + metrics_for_heatmap].copy()
+
+# Filter out models with missing data (Previous Baseline)
+heatmap_df = heatmap_df.dropna(subset=['accuracy'])
+
+# Set model as index
+heatmap_df = heatmap_df.set_index('model')
+
+# Create readable column names
+column_labels = {
+    'accuracy': 'Accuracy',
+    'precision_approved': 'Precision\n(Approved)',
+    'precision_rejected': 'Precision\n(Rejected)',
+    'recall_approved': 'Recall\n(Approved)',
+    'recall_rejected': 'Recall\n(Rejected)',
+    'f1_approved': 'F1\n(Approved)',
+    'f1_rejected': 'F1\n(Rejected)',
+    'auroc': 'AUROC'
+}
+heatmap_df.columns = [column_labels[col] for col in heatmap_df.columns]
+
+# Create heatmap
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.heatmap(heatmap_df, annot=True, fmt='.3f', cmap='RdYlGn', 
+            vmin=0, vmax=1, center=0.5,
+            annot_kws={'size': 10, 'weight': 'bold'},
+            cbar_kws={'label': 'Score', 'shrink': 0.8},
+            linewidths=1.5, linecolor='white',
+            ax=ax)
+
+ax.set_title('Comprehensive Metrics Comparison Across All Baselines', 
+             fontsize=16, fontweight='bold', pad=20)
+ax.set_xlabel('Metrics', fontsize=12, fontweight='bold')
+ax.set_ylabel('Models', fontsize=12, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig(OUTPUT_DIR / 'baselines_comprehensive_metrics.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("   Saved: baselines_comprehensive_metrics.png")
+
+# Print summary table
+print("\n" + "=" * 80)
+print("BASELINE COMPARISON SUMMARY")
+print("=" * 80)
+print("\nComplete Metrics Table:")
+print("-" * 100)
+display_cols = ['model', 'accuracy', 'f1_rejected', 'f1_approved', 'auroc']
+display_df = baseline_df[display_cols].copy()
+for col in ['accuracy', 'f1_rejected', 'f1_approved', 'auroc']:
+    display_df[col] = display_df[col].apply(lambda x: f"{x:.4f}" if not np.isnan(x) else "N/A")
+print(display_df.to_string(index=False))
+print("-" * 100)
+
+# =====================================================
 # STATISTICAL COMPARISON WITH BASELINE
 # =====================================================
 
@@ -770,8 +1087,11 @@ print(f"  7. feature_importance_new_features.png")
 print(f"  8. distribution_party_popularity.png")
 print(f"  9. distribution_historical_approval_rate.png")
 print(f"  10. correlation_matrix_new_features.png")
-print(f"  11. auroc_comparison.png")
-print(f"  12. f1_comparison.png")
+print(f"  11. baselines_auroc_comparison.png - Comprehensive AUROC comparison")
+print(f"  12. baselines_f1_rejected_comparison.png - Comprehensive F1 rejected comparison")
+print(f"  13. baselines_comprehensive_metrics.png - Full metrics heatmap")
+print(f"  14. auroc_comparison.png")
+print(f"  15. f1_comparison.png")
 print(f"\nOutput log saved to: global_votes_prediction_FULL_enhanced_output.txt")
 
 # Close output file

@@ -36,13 +36,13 @@ The script reads four CSVs:
 1) **Main sessions dataset** — `data/vote_sessions_full.csv`  
    Loaded columns include: `id`, `data`, `aprovacao`, `propositionID`, `siglaOrgao`, `year`, `author_type`, `num_authors`, `theme`, `legislatura`, `Governo`, `Oposição`, `GOV.`
 
-2) **Author popularity** — `scripts/01-feature-engineering/Author's Popularity/author_popularity.csv`  
+2) **Author popularity** — `data/features/author_popularity.csv`  
    Columns used: `idVotacao`, `popularity`
 
-3) **Party popularity** — `scripts/01-feature-engineering/Party Popularity/party_popularity_best_window_last_5_sessions.csv`  
+3) **Party popularity** — `data/features/party_popularity_best_window_last_5_sessions.csv`  
    Columns used: `id`, `party_popularity`
 
-4) **Historical approval rate** — `scripts/01-feature-engineering/Historical Approval Rate/proposition_history_predictions_historical_probability_rule.csv`  
+4) **Historical approval rate** — `data/features/proposition_history_predictions_historical_probability_rule.csv`  
    Columns used: `id`, `historical_approval_rate`
 
 Merge logic:

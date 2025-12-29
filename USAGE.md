@@ -46,15 +46,15 @@ If you want to regenerate all features from scratch:
 2. **Run feature engineering scripts in order**:
    - Run `scripts/01-feature-engineering/Author's Popularity/authors_popularity.py`
      - This generates author popularity features
-     - Output: `data/author_popularity.csv`
+     - Output: `data/features/author_popularity.csv`
    
    - Run `scripts/01-feature-engineering/Party Popularity/party_popularity.py`
      - This generates party popularity features
-     - Output: `party_popularity_best_window_last_5_sessions.csv`
+     - Output: `data/features/party_popularity_best_window_last_5_sessions.csv`
    
    - Run `scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate.py`
      - This generates historical approval rate (HAR) features
-     - Output: `proposition_history_predictions_historical_probability_rule.csv`
+     - Output: `data/features/proposition_history_predictions_historical_probability_rule.csv`
 
 3. **Run the modeling notebook**:
    - Open `scripts/02-modeling/vote-rap-model.ipynb`
@@ -80,9 +80,9 @@ If you just want to run the final model with the provided feature files:
 
 ### Feature Engineering Scripts
 
-- **authors_popularity.py**: Generates `data/author_popularity.csv`
-- **party_popularity.py**: Generates `party_popularity_best_window_last_5_sessions.csv`
-- **historical_approval_rate.py**: Generates `proposition_history_predictions_historical_probability_rule.csv`
+- **authors_popularity.py**: Generates `data/features/author_popularity.csv`
+- **party_popularity.py**: Generates `data/features/party_popularity_best_window_last_5_sessions.csv`
+- **historical_approval_rate.py**: Generates `data/features/proposition_history_predictions_historical_probability_rule.csv`
 
 ### Modeling Notebook
 
@@ -127,9 +127,9 @@ Then restart JupyterLab and select the kernel.
 
 The repository includes the following pre-computed data files in `data/`:
 - `vote_sessions_full.csv` - Main voting sessions dataset
-- `author_popularity.csv` - Author popularity features
-- `party_popularity_best_window_last_5_sessions.csv` - Party popularity features
-- `proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate features
+- `features/author_popularity.csv` - Author popularity features
+- `features/party_popularity_best_window_last_5_sessions.csv` - Party popularity features
+- `features/proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate features
 - `voting_sessions_orientations_clean.csv` - Vote orientation data
 
 ## Notes

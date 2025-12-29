@@ -387,8 +387,10 @@ try:
     df_author_popularity = df_author_popularity.drop_duplicates(subset=['idVotacao'])
     log_progress(f"Final popularity DataFrame: {df_author_popularity.shape}")
     
-    # 13) Save the DataFrame to a CSV file
-    output_path = OUTPUT_DIR / 'author_popularity.csv'
+    # 13) Save the DataFrame to a CSV file (centralized under data/features)
+    features_dir = Path(__file__).resolve().parents[3] / "data" / "features"
+    features_dir.mkdir(parents=True, exist_ok=True)
+    output_path = features_dir / "author_popularity.csv"
     log_progress(f"Saving popularity metrics to {output_path}...")
     df_author_popularity.to_csv(output_path, index=False, encoding='utf-8')
     log_progress(f"Popularity metrics saved successfully")

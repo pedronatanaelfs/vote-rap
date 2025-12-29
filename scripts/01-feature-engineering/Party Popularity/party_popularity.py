@@ -28,6 +28,7 @@ import json
 import time
 from time import sleep
 from pathlib import Path
+import shutil
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, average_precision_score, balanced_accuracy_score
@@ -47,6 +48,13 @@ BASE_DIR = Path(__file__).parent.parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
 EXTRA_DATA_DIR = DATA_DIR / "extra"
 OUTPUT_DIR = Path(__file__).parent
+FEATURES_DIR = DATA_DIR / "features"
+RESULTS_DIR = BASE_DIR / "results" / "feature_engineering" / "party_popularity"
+PAPER_FIG_DIR = BASE_DIR / "article" / "figures"
+
+FEATURES_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+PAPER_FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Setup output logging to file
 class TeeOutput:
@@ -451,9 +459,16 @@ plt.tight_layout()
 plt.suptitle('Party Popularity Window Size Comparison - AUROC Performance', 
              fontsize=16, fontweight='bold', y=1.02)
 
-plot_filename = "party_popularity_auroc_comparison.png"
+plot_filename = RESULTS_DIR / "party_popularity_auroc_comparison.png"
 plt.savefig(plot_filename, dpi=300, bbox_inches='tight', facecolor='white')
 print(f"Saved: {plot_filename}")
+
+# Keep a copy under article/figures for the paper build
+try:
+    shutil.copyfile(plot_filename, PAPER_FIG_DIR / plot_filename.name)
+    print(f"Copied to paper figures: {PAPER_FIG_DIR / plot_filename.name}")
+except Exception as e:
+    print(f"Warning: failed to copy plot to article/figures: {e}")
 
 # Generate final CSV with best window
 print("\n=== GENERATING FINAL DATASET ===")
@@ -478,7 +493,7 @@ if best_config:
     final_dataset = final_output[output_columns].copy()
     
     best_window_clean_name = best_window_name.lower().replace(' ', '_').replace('-', '_')
-    final_filename = f"party_popularity_best_window_{best_window_clean_name}.csv"
+    final_filename = FEATURES_DIR / f"party_popularity_best_window_{best_window_clean_name}.csv"
     final_dataset.to_csv(final_filename, index=False)
     print(f"Saved: {final_filename}")
     print(f"Rows: {len(final_dataset):,}")

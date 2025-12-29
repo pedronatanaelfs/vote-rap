@@ -66,6 +66,9 @@ outputs/
 # Keep specific images in img/ directory
 !img/AUROC_comparison.png
 !img/approval_rate_theme.png
+# Keep paper figures (LaTeX assets)
+!article/figures/*.png
+!article/figures/*.pptx
 
 # Temporary files
 *.tmp

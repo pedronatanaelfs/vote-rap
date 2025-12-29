@@ -38,7 +38,8 @@ np.random.seed(RANDOM_SEED)
 # Set paths
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = Path(__file__).parent
+OUTPUT_DIR = BASE_DIR / "results" / "modeling" / "yearly_enhanced"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Setup output logging to file
 class TeeOutput:
@@ -84,17 +85,17 @@ vote_sessions = pd.read_csv(
              "author_type", "num_authors", "theme", "legislatura", "Governo", "Oposição", "GOV."]
 )
 authors_pop = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Author's Popularity" / "author_popularity.csv",
+    DATA_DIR / "features" / "author_popularity.csv",
     usecols=["idVotacao", "popularity"]
 )
 
 # Load the new enhanced features
 party_popularity = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Party Popularity" / "party_popularity_best_window_last_5_sessions.csv",
+    DATA_DIR / "features" / "party_popularity_best_window_last_5_sessions.csv",
     usecols=["id", "party_popularity"]
 )
 historical_data = pd.read_csv(
-    BASE_DIR / "scripts" / "01-feature-engineering" / "Historical Approval Rate" / "proposition_history_predictions_historical_probability_rule.csv",
+    DATA_DIR / "features" / "proposition_history_predictions_historical_probability_rule.csv",
     usecols=["id", "historical_approval_rate"]
 )
 
