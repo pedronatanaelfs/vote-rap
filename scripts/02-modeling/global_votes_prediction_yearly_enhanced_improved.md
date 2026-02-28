@@ -18,6 +18,8 @@ It also uses `popularity` (author popularity) and the baseline-oriented features
 
 The script generates:
 
+Under `results/modeling/yearly_enhanced/`:
+
 1. `yearly_performance_with_presidents.png`  
    Year-by-year AUROC and F1 (Rejected) with presidential periods shaded.
 
@@ -26,7 +28,7 @@ The script generates:
 
 And writes all console output to:
 
-- `global_votes_prediction_yearly_enhanced_output.txt`
+- `results/modeling/yearly_enhanced/global_votes_prediction_yearly_enhanced_output.txt`
 
 ---
 

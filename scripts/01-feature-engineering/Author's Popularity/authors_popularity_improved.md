@@ -23,7 +23,13 @@ The script:
    - **Pass 1:** collect each author's vote history as a list of events (time, yes/no, importance, session id).
    - **Pass 2:** compute rolling-window and exponentially-decayed popularity metrics for each author over time.
 
-Finally, it writes `author_popularity.csv`.
+Finally, it writes the engineered feature to:
+
+- `data/features/author_popularity.csv`
+
+It also writes an execution log to:
+
+- `scripts/01-feature-engineering/Author's Popularity/authors_popularity_output.txt`
 
 ---
 

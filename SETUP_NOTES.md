@@ -16,10 +16,10 @@ The scripts have been updated to work with the new repository structure. However
 
 All required data files are included in the `data/` directory:
 - `vote_sessions_full.csv` - Main dataset
-- `author_popularity.csv` - Author popularity features
-- `party_popularity_best_window_last_5_sessions.csv` - Party popularity features
-- `proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate
-- `voting_sessions_orientations_clean.csv` - Vote orientation data
+- `data/features/author_popularity.csv` - Author popularity feature (engineered)
+- `data/features/party_popularity_best_window_last_5_sessions.csv` - Party popularity feature (engineered)
+- `data/features/proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate feature (engineered)
+- `data/voting/orientations/votacoesOrientacoes-YYYY.csv` - Vote orientation tables (raw, by year)
 
 ## Running from Different Locations
 

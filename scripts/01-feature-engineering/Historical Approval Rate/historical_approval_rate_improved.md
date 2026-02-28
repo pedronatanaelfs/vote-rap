@@ -4,9 +4,9 @@ This script engineers **proposition-history features** for VOTE-RAP by looking a
 
 It is a Python script version of the original notebook (`related_objects.ipynb`) and generates:
 
-1. `proposition_history_predictions_historical_probability_rule.csv`
-2. `proposition_history_rules_comparison.png`
-3. `historical_approval_rate_output.txt` (execution log)
+1. `data/features/proposition_history_predictions_historical_probability_rule.csv`
+2. `results/feature_engineering/historical_approval_rate/proposition_history_rules_comparison.png`
+3. `scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate_output.txt` (execution log)
 
 ---
 

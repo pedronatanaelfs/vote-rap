@@ -10,6 +10,8 @@ This is a Python-script replication of `global_votes_prediction_FULL_enhanced.ip
 
 The run generates:
 
+Under `results/modeling/full_enhanced/`:
+
 1. `approval_rejection_by_year.png`
 2. `vote_orientation_accuracy_by_year.png`
 3. `confusion_matrix.png`
@@ -22,10 +24,13 @@ The run generates:
 10. `correlation_matrix_new_features.png`
 11. `auroc_comparison.png`
 12. `f1_comparison.png`
+13. `baselines_auroc_comparison.png`
+14. `baselines_f1_rejected_comparison.png`
+15. `baselines_comprehensive_metrics.png`
 
 And a full log file:
 
-- `global_votes_prediction_FULL_enhanced_output.txt`
+- `results/modeling/full_enhanced/global_votes_prediction_FULL_enhanced_output.txt`
 
 ---
 

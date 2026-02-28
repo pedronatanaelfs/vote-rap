@@ -8,9 +8,9 @@ The script also produces a comparison plot of window AUROC scores and logs execu
 
 ## What the script generates
 
-1. `party_popularity_best_window_last_5_sessions.csv` (final feature file)
-2. `party_popularity_auroc_comparison.png` (window comparison chart)
-3. `party_popularity_output.txt` (execution log)
+1. `data/features/party_popularity_best_window_last_5_sessions.csv` (final feature file)
+2. `results/feature_engineering/party_popularity/party_popularity_auroc_comparison.png` (window comparison chart)
+3. `scripts/01-feature-engineering/Party Popularity/party_popularity_output.txt` (execution log)
 
 ---
 

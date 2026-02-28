@@ -32,18 +32,13 @@ Before starting, ensure you have:
    python -m ipykernel install --user --name=vote-rap --display-name="Python (vote-rap)"
    ```
 
-## Running the Notebooks
+## Running the Pipeline
 
 ### Option 1: Run Feature Engineering + Modeling (Full Pipeline)
 
 If you want to regenerate all features from scratch:
 
-1. **Start JupyterLab**:
-   ```bash
-   jupyter lab
-   ```
-
-2. **Run feature engineering scripts in order**:
+1. **Run feature engineering scripts in order**:
    - Run `scripts/01-feature-engineering/Author's Popularity/authors_popularity.py`
      - This generates author popularity features
      - Output: `data/features/author_popularity.csv`
@@ -56,25 +51,18 @@ If you want to regenerate all features from scratch:
      - This generates historical approval rate (HAR) features
      - Output: `data/features/proposition_history_predictions_historical_probability_rule.csv`
 
-3. **Run the modeling notebook**:
-   - Open `scripts/02-modeling/vote-rap-model.ipynb`
-   - This loads all features and trains the final VOTE-RAP model
-   - Make sure all feature CSV files are in the `data/` directory
+2. **Run the main model script**:
+   - Run `scripts/02-modeling/global_votes_prediction_FULL_enhanced.py`
+   - This loads `data/vote_sessions_full.csv` and merges feature CSVs from `data/features/`
+   - Outputs figures/logs under `results/modeling/`
 
 ### Option 2: Run Modeling Only (Using Pre-computed Features)
 
 If you just want to run the final model with the provided feature files:
 
-1. **Start JupyterLab**:
-   ```bash
-   jupyter lab
-   ```
-
-2. **Run the modeling notebook**:
-   - Open `scripts/02-modeling/vote-rap-model.ipynb`
-   - Select the `Python (vote-rap)` kernel
-   - Run all cells
-   - The notebook will load pre-computed features from the `data/` directory
+1. **Run the main model script**:
+   - Run `scripts/02-modeling/global_votes_prediction_FULL_enhanced.py`
+   - The script will load pre-computed feature CSVs from `data/features/`
 
 ## Expected Outputs
 
@@ -84,9 +72,9 @@ If you just want to run the final model with the provided feature files:
 - **party_popularity.py**: Generates `data/features/party_popularity_best_window_last_5_sessions.csv`
 - **historical_approval_rate.py**: Generates `data/features/proposition_history_predictions_historical_probability_rule.csv`
 
-### Modeling Notebook
+### Modeling scripts
 
-The `vote-rap-model.ipynb` notebook will:
+The main modeling scripts (e.g., `global_votes_prediction_FULL_enhanced.py`) will:
 1. Load and merge all feature files
 2. Perform data preprocessing
 3. Train XGBoostClassifier with hyperparameter optimization
@@ -127,15 +115,15 @@ Then restart JupyterLab and select the kernel.
 
 The repository includes the following pre-computed data files in `data/`:
 - `vote_sessions_full.csv` - Main voting sessions dataset
-- `features/author_popularity.csv` - Author popularity features
-- `features/party_popularity_best_window_last_5_sessions.csv` - Party popularity features
-- `features/proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate features
-- `voting_sessions_orientations_clean.csv` - Vote orientation data
+- `features/author_popularity.csv` - Author popularity feature (engineered)
+- `features/party_popularity_best_window_last_5_sessions.csv` - Party popularity feature (engineered)
+- `features/proposition_history_predictions_historical_probability_rule.csv` - Historical approval rate feature (engineered)
+- `voting/orientations/votacoesOrientacoes-YYYY.csv` - Vote orientation tables (raw, by year)
 
 ## Notes
 
 - The scripts are designed to be run sequentially for feature engineering
-- The modeling notebook can be run independently if feature files are already present
+- The modeling scripts can be run independently if feature files are already present
 - Some cells may take several minutes to execute (especially hyperparameter optimization)
 - Make sure you have sufficient RAM (recommended: 8GB+) for running the full pipeline
 

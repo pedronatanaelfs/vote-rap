@@ -1,8 +1,6 @@
 # VOTE-RAP: Vote Outcome Prediction using Temporal Evidence of Related Approval Patterns
 
-This repository contains the implementation and results for the research presented at the **2025 Doctoral Consortium School – ADBIS**, Tampere University.
-
-**Authors**: Pedro N. F. da Silva and colleagues
+This repository contains the implementation and results for the VOTE-RAP vote-outcome prediction experiments.
 
 ## Overview
 
@@ -20,25 +18,28 @@ vote-rap/
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
 ├── .gitignore                         # Git ignore rules
-├── data/                              # Data files
-│   ├── vote_sessions_full.csv         # Main voting sessions dataset
-│   ├── features/                      # Engineered feature files used by the models
-│   │   ├── author_popularity.csv      # Author popularity features
-│   │   ├── party_popularity_best_window_last_5_sessions.csv  # Party popularity features
-│   │   └── proposition_history_predictions_historical_probability_rule.csv  # Historical approval rate
-│   └── voting_sessions_orientations_clean.csv  # Vote orientation data
+├── data/                              # Datasets (raw + processed)
+│   ├── vote_sessions_full.csv         # Main sessions table (one row per vote session)
+│   ├── features/                      # Engineered feature CSVs used by the models
+│   ├── voting/                        # Roll-call votes + orientations (by year)
+│   ├── propositions/                  # Proposition metadata (XLSX/CSV by year)
+│   ├── authors/                       # Proposition authorship tables (CSV by year)
+│   └── extra/                         # Auxiliary lookup tables (e.g., deputy→party by legislature)
 ├── scripts/
 │   ├── 00 - Data Aquisition/         # Data acquisition scripts
 │   ├── 01-feature-engineering/       # Feature engineering scripts
 │   │   ├── Author's Popularity/      # Author popularity feature
 │   │   ├── Party Popularity/         # Party popularity feature
 │   │   └── Historical Approval Rate/ # Historical approval rate (HAR) feature
-│   └── 02-modeling/                   # Modeling notebooks
-│       └── vote-rap-model.ipynb       # Final VOTE-RAP model
-└── img/                               # Result images and visualizations
+│   ├── 02-modeling/                   # Modeling scripts/notebooks
+│   └── 03-comparisons/                # Comparison studies (e.g., Albuquerque)
+├── results/                           # Generated figures/logs (feature engineering + modeling)
+└── img/                               # Example figures used in the README
     ├── AUROC_comparison.png
     └── approval_rate_theme.png
 ```
+
+For step-by-step execution, see `USAGE.md`. If you run into path issues, see `SETUP_NOTES.md`.
 
 ## Features
 
@@ -64,7 +65,7 @@ A feature representing the recent empirical probability that **similar propositi
 
 1. Clone the repository:
    ```bash
-   git clone [REPOSITORY_URL]
+   git clone <REPOSITORY_URL>
    cd vote-rap
    ```
 
@@ -87,34 +88,46 @@ A feature representing the recent empirical probability that **similar propositi
 
 ## Usage
 
-### Running the Notebooks
+### Quickstart (using pre-computed features)
 
-1. Start JupyterLab:
-   ```bash
-   jupyter lab
-   ```
+The repository already includes the engineered feature CSVs under `data/features/`. You can run the main model directly:
 
-2. Navigate to the scripts directory and run the scripts in order:
-   - **Data Acquisition**:
-     - `scripts/00 - Data Aquisition/data_aquisition.py`
-   
-   - **Feature Engineering** (run in order):
-     - `scripts/01-feature-engineering/Author's Popularity/authors_popularity.py`
-     - `scripts/01-feature-engineering/Party Popularity/party_popularity.py`
-     - `scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate.py`
-   
-   - **Modeling**:
-     - `scripts/02-modeling/vote-rap-model.ipynb`
+```bash
+python "scripts/02-modeling/global_votes_prediction_FULL_enhanced.py"
+```
 
-3. Make sure to select the `Python (vote-rap)` kernel when opening notebooks.
+This writes figures/logs under `results/modeling/` (and prints metrics to the console).
+
+### Regenerating features (optional)
+
+If you want to recreate the engineered features from the raw tables in `data/`:
+
+```bash
+python "scripts/01-feature-engineering/Author's Popularity/authors_popularity.py"
+python "scripts/01-feature-engineering/Party Popularity/party_popularity.py"
+python "scripts/01-feature-engineering/Historical Approval Rate/historical_approval_rate.py"
+```
+
+Outputs:
+- `data/features/author_popularity.csv`
+- `data/features/party_popularity_best_window_last_5_sessions.csv`
+- `data/features/proposition_history_predictions_historical_probability_rule.csv`
+
+### Other experiments
+
+- **Year-by-year moving-window evaluation**: `scripts/02-modeling/global_votes_prediction_yearly_enhanced.py`
+- **Ablation study**: `scripts/02-modeling/ablation_vote_rap.py`
+- **Comparisons**: `scripts/02-modeling/compare_vote_rap_vs_viola.py` and `scripts/02-modeling/compare_vote_rap_vs_albuquerque.py`
+
+Some experiments include notebooks (e.g., `scripts/02-modeling/baselines.ipynb`).
 
 ### Workflow
 
 The typical workflow is:
 
 1. **Feature Engineering** (Optional): Run the feature engineering scripts to generate the three main features (author popularity, party popularity, historical approval rate).
-   - **Note**: The feature engineering scripts use relative paths to the `data/` directory. Alternatively, you can use the pre-computed feature files already in the `data/` directory.
-2. **Modeling**: Run the main modeling notebook which:
+   - **Note**: The feature engineering scripts use relative paths to the `data/` directory. Alternatively, you can use the pre-computed feature files already in `data/features/`.
+2. **Modeling**: Run the modeling scripts which:
    - Loads all features
    - Performs data preprocessing
    - Trains an XGBoostClassifier with hyperparameter optimization
@@ -169,20 +182,7 @@ Additional evaluation includes:
   - Richer contextual features
   - Complex network-based metrics
 
-## Citation
-
-If you use this work, please cite:
-
-```
-Silva, P. N. F. da, et al. (2025). Vote Outcome Prediction using Temporal Evidence of Related Approval Patterns. 
-2025 Doctoral Consortium School – ADBIS, Tampere University.
-```
-
 ## License
 
 See LICENSE file for details.
-
-## Contact
-
-For questions or issues, please open an issue on the repository or contact the authors.
 
