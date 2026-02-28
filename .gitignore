@@ -66,9 +66,9 @@ outputs/
 # Keep specific images in img/ directory
 !img/AUROC_comparison.png
 !img/approval_rate_theme.png
-# Keep paper figures (LaTeX assets)
-!article/figures/*.png
-!article/figures/*.pptx
+
+# Manuscript / article (ignore everything under this folder)
+/article/
 
 # Temporary files
 *.tmp
@@ -82,6 +82,4 @@ outputs/
 /data/voting/proposition
 /data/voting
 VOTE_RAP_Version_14_12.pdf
-/article
-/article
 scripts/03-comparisons/albuquerque/features.csv
